@@ -220,7 +220,7 @@
             { id: 'dairy', name: '乳制品', icon: '🥛' },
             { id: 'grains', name: '粮油米面', icon: '🍚' },
             { id: 'snacks', name: '休闲零食', icon: '🍿' },
-            { { id: 'beverages', name: '饮料酒水', icon: '🥤' },
+            { id: 'beverages', name: '饮料酒水', icon: '🥤' },
             { id: 'seasonings', name: '调味品', icon: '🧂' },
             { id: 'personal_care', name: '个人护理', icon: '🧴' },
             { id: 'household', name: '家居用品', icon: '🏠' },
@@ -277,87 +277,102 @@
 
         function init() {
             var grid = document.getElementById('categoryGrid');
-            categories.forEach(function(cat) {
+            for (var i = 0; i < categories.length; i++) {
+                var cat = categories[i];
                 var div = document.createElement('div');
                 div.className = 'category-item';
                 div.textContent = cat.icon + ' ' + cat.name;
-                div.onclick = function() { selectCategory(cat, div); };
+                div.onclick = createClickHandler(cat, div);
                 grid.appendChild(div);
-            });
-            
-            loadUpdateTime();
+            }
+            load();
+        }
+
+        function createClickHandler(category, element) {
+            return function() {
+                selectCategory(category, element);
+            };
         }
 
         function selectCategory(category, element) {
             selectedCategory = category.id;
-            
-            var items = document.querySelectorAll.selectAll('.category-item');
+            var items = document.querySelectorAll('.category-item');
             for (var i = 0; i < items.length; i++) {
                 items[i].classList.remove('selected');
             }
             element.classList.add('selected');
-            
             document.getElementById('actionSection').style.display = 'block';
             document.getElementById('productList').innerHTML = '';
             document.getElementById('categoryTitle').textContent = category.icon + ' ' + category.name + ' - 商品列表';
         }
 
         function generateProducts() {
-            if (!selectedCategory) return;
-            
+            if (!selectedCategory) {
+                return;
+            }
             currentProducts = products[selectedCategory];
             var categoryPrices = prices[selectedCategory];
             var unit = units[selectedCategory];
-            
             var html = '';
             for (var i = 0; i < currentProducts.length; i++) {
                 html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + categoryPrices[i].toFixed(2) + '</span><span class="unit">/' + unit + '</span></span></div>';
             }
-            
             document.getElementById('productList').innerHTML = html;
         }
 
         function updatePrices() {
-            if (!selectedCategory || currentProducts.length === 0) return;
-            
+            if (!selectedCategory || currentProducts.length === 0) {
+                return;
+            }
             var loading = document.getElementById('loading');
             loading.style.display = 'block';
-            
             setTimeout(function() {
                 var categoryPrices = prices[selectedCategory];
-                var updatedPrices = categoryPrices.map(function(price) {
+                var updatedPrices = [];
+                for (var i = 0; i < categoryPrices.length; i++) {
+                    var price = categoryPrices[i];
                     var fluctuation = (Math.random() - 0.5) * 0.2;
-                    return Math.max(0, price * (1 + fluctuation));
-                });
-                
+                    updatedPrices.push(Math.max(0, price * (1 + fluctuation)));
+                }
                 var html = '';
                 for (var i = 0; i < currentProducts.length; i++) {
                     html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + updatedPrices[i].toFixed(2) + '</span><span class="unit">/' + units[selectedCategory] + '</span></span></div>';
                 }
-                
                 document.getElementById('productList').innerHTML = html;
-                
                 var now = new Date();
-                var timeStr = now.getFullYear() + '-' + (now.getMonth()+1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2);
+                var year = now.getFullYear();
+                var month = padStart(now.getMonth() + 1, '0', 2);
+                var day = padStart(now.getDate(), '0', 2);
+                var hour = padStart(now.getHours(), '0', 2);
+                var minute = padStart(now.getMinutes(), '0', 2);
+                var second = padStart(now.getSeconds(), '0', 2);
+                var timeStr = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
                 document.getElementById('updateTime').textContent = '更新时间: ' + timeStr;
                 saveUpdateTime(timeStr);
-                
                 loading.style.display = 'none';
             }, 1000);
+        }
+
+        function padStart(str, pad, length) {
+            str = str.toString();
+            while (str.length < length) {
+                str = pad + str;
+            }
+            return str;
         }
 
         function saveUpdateTime(time) {
             localStorage.setItem('lastUpdateTime', time);
         }
 
-        function loadUpdateTime() {
+        function load() {
             var time = localStorage.getItem('lastUpdateTime');
             if (time) {
                 document.getElementById('updateTime').textContent = '更新时间: ' + time;
             }
         }
 
-        init();
+        window.onload = init;
     </script>
 </body>
 </html>
