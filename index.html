@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="邯郸物价查询 - 实时超市价格信息">
+    <meta name="keywords" content="邯郸,物价,超市,价格查询">
+    <title>邯郸物价查询</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            font-size: 22px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4CAF50;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+        .category-item {
+            background-color: #E8F5E9;
+            padding: 18px 12px;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #4CAF50;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .category-item:hover {
+            background-color: #4CAF50;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        .category-item.selected {
+            background-color: #4CAF50;
+            color: white;
+            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+        }
+        .button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+        }
+        .button:active {
+            transform: translateY(0);
+        }
+        .product-list {
+            margin-top: 20px;
+        }
+        .product-item {
+            background-color: white;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 5px solid #4CAF50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        .product-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .product-name {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+            flex: 1;
+        }
+        .price {
+            color: #E53935;
+            font-weight: bold;
+            font-size: 22px;
+            margin-left: 15px;
+        }
+        .unit {
+            color: #999;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        .update-section {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .update-time {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .loading {
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 10px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 26px;
+            }
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .product-item {
+                padding: 15px;
+            }
+            .price {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏪 邯郸物价查询</h1>
+        <p>实时超市价格信息 · 随时随地查看</p>
+    </div>
+
+    <div class="section">
+        <h2>📦 选择分类</h2>
+        <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <div class="section" id="actionSection" style="display: none;">
+        <h2 id="categoryTitle">商品列表</h2>
+        <div style="text-align: center;">
+            <button class="button" onclick="generateProducts()">✨ 生成商品</button>
+        </div>
+        <div class="product-list" id="productList"></div>
+        
+        <div class="update-section">
+            <button class="button" onclick="updatePrices()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">🔄 更新价格</button>
+            <div class="update-time" id="updateTime">更新时间: 暂未更新</div>
+            <div class="loading" id="loading" style="display: none;">正在更新价格...</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>💡 数据仅供参考，实际价格以超市为准</p>
+        <p>© 2024 邯郸物价查询</p>
+    </div>
+
+    <script>
+        var categories = [
+            { id: 'daily_necessities', name: '生活用品', icon: '🧹' },
+            { id: 'fresh_food', name: '生鲜食品', icon: '🥩' },
+            { id: 'vegetables_fruits', name: '蔬菜水果', icon: '🥬' },
+            { id: 'meat', name: '肉类', icon: '🍖' },
+            { id: 'dairy', name: '乳制品', icon: '🥛' },
+            { id: 'grains', name: '粮油米面', icon: '🍚' },
+            { id: 'snacks', name: '休闲零食', icon: '🍿' },
+            { { id: 'beverages', name: '饮料酒水', icon: '🥤' },
+            { id: 'seasonings', name: '调味品', icon: '🧂' },
+            { id: 'personal_care', name: '个人护理', icon: '🧴' },
+            { id: 'household', name: '家居用品', icon: '🏠' },
+            { id: 'frozen_food', name: '冷冻食品', icon: '🧊' }
+        ];
+
+        var products = {
+            daily_necessities: ['卷纸', '抽纸', '洗衣液', '洗洁精', '垃圾袋', '洗手液', '牙膏', '毛巾', '脸盆', '拖鞋'],
+            fresh_food: ['鲜鸡蛋', '豆腐', '豆芽', '活鱼', '虾', '鱿鱼', '海带', '紫菜', '腐竹', '木耳'],
+            vegetables_fruits: ['油麦菜', '菠菜', '豆角', '西红柿', '黄瓜', '茄子', '青椒', '胡萝卜', '土豆', '西兰花'],
+            meat: ['猪肉', '牛肉', '羊肉', '鸡肉', '鸭肉', '排骨', '五花肉', '猪肝', '鸡翅', '猪蹄'],
+            dairy: ['纯牛奶', '酸奶', '奶酪', '黄油', '奶油', '奶粉', '炼乳', '豆浆', '豆奶', '乳酸菌饮料'],
+            grains: ['大米', '小米', '面粉', '玉米面', '食用油', '香油', '挂面', '方便面', '燕麦片', '八宝粥'],
+            snacks: ['薯片', '饼干', '瓜子', '花生', '糖果', '巧克力', '果冻', '爆米花', '坚果', '海苔'],
+            beverages: ['矿泉水', '可乐', '雪碧', '橙汁', '苹果汁', '绿茶', '红茶', '咖啡', '啤酒', '功能饮料'],
+            seasonings: ['酱油', '醋', '盐', '糖', '味精', '鸡精', '胡椒粉', '花椒', '八角', '料酒'],
+            personal_care: ['洗发水', '护发素', '沐浴露', '洗面奶', '爽肤水', '面霜', '防晒霜', '口红', '面膜', '化妆棉'],
+            household: ['洗洁精', '洗衣粉', '消毒液', '空气清新剂', '蚊香', '杀虫剂', '拖把', '扫帚', '抹布', '水桶'],
+            frozen_food: ['速冻水饺', '速冻汤圆', '速冻包子', '速冻馒头', '速冻鸡翅', '速冻排骨', '速冻鱼块', '速冻虾仁', '速冻蔬菜', '速冻披萨']
+        };
+
+        var prices = {
+            daily_necessities: [15.90, 8.90, 25.90, 12.90, 5.90, 9.90, 12.90, 18.90, 15.90, 19.90],
+            fresh_food: [5.80, 2.50, 3.50, 12.00, 35.00, 28.00, 8.00, 15.00, 12.00, 25.00],
+            vegetables_fruits: [3.50, 4.00, 5.50, 4.50, 3.80, 3.20, 4.80, 2.50, 2.80, 6.50],
+            meat: [15.50, 38.00, 42.00, 12.00, 18.00, 22.00, 16.00, 18.00, 15.00, 20.00],
+            dairy: [3.50, 4.50, 12.00, 18.00, 15.00, 68.00, 22.00, 3.00, 3.50, 5.00],
+            grains: [3.20, 5.50, 2.80, 3.50, 65.00, 25.00, 8.00, 3.50, 18.00, 5.50],
+            snacks: [8.50, 6.00, 12.00, 15.00, 8.00, 15.00, 5.00, 7.00, 25.00, 10.00],
+            beverages: [2.00, 3.50, 3.50, 4.50, 4.50, 3.00, 3.00, 5.00, 4.00, 6.00],
+            seasonings: [12.00, 8.00, 2.50, 4.00, 8.00, 15.00, 12.00, 18.00, 25.00, 10.00],
+            personal_care: [35.00, 28.00, 32.00, 45.00, 88.00, 128.00, 98.00, 168.00, 68.00, 15.00],
+            household: [12.00, 8.00, 15.00, 18.00, 12.00, 18.00, 25.00, 15.00, 8.00, 18.00],
+            frozen_food: [18.00, 15.00, 12.00, 8.00, 22.00, 28.00, 18.00, 35.00, 12.00, 25.00]
+        };
+
+        var units = {
+            daily_necessities: '提',
+            fresh_food: '斤',
+            vegetables_fruits: '斤',
+            meat: '斤',
+            dairy: '盒',
+            grains: '斤',
+            snacks: '包',
+            beverages: '瓶',
+            seasonings: '瓶',
+            personal_care: '瓶',
+            household: '个',
+            frozen_food: '袋'
+        };
+
+        var selectedCategory = null;
+        var currentProducts = [];
+
+        function init() {
+            var grid = document.getElementById('categoryGrid');
+            categories.forEach(function(cat) {
+                var div = document.createElement('div');
+                div.className = 'category-item';
+                div.textContent = cat.icon + ' ' + cat.name;
+                div.onclick = function() { selectCategory(cat, div); };
+                grid.appendChild(div);
+            });
+            
+            loadUpdateTime();
+        }
+
+        function selectCategory(category, element) {
+            selectedCategory = category.id;
+            
+            var items = document.querySelectorAll.selectAll('.category-item');
+            for (var i = 0; i < items.length; i++) {
+                items[i].classList.remove('selected');
+            }
+            element.classList.add('selected');
+            
+            document.getElementById('actionSection').style.display = 'block';
+            document.getElementById('productList').innerHTML = '';
+            document.getElementById('categoryTitle').textContent = category.icon + ' ' + category.name + ' - 商品列表';
+        }
+
+        function generateProducts() {
+            if (!selectedCategory) return;
+            
+            currentProducts = products[selectedCategory];
+            var categoryPrices = prices[selectedCategory];
+            var unit = units[selectedCategory];
+            
+            var html = '';
+            for (var i = 0; i < currentProducts.length; i++) {
+                html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + categoryPrices[i].toFixed(2) + '</span><span class="unit">/' + unit + '</span></span></div>';
+            }
+            
+            document.getElementById('productList').innerHTML = html;
+        }
+
+        function updatePrices() {
+            if (!selectedCategory || currentProducts.length === 0) return;
+            
+            var loading = document.getElementById('loading');
+            loading.style.display = 'block';
+            
+            setTimeout(function() {
+                var categoryPrices = prices[selectedCategory];
+                var updatedPrices = categoryPrices.map(function(price) {
+                    var fluctuation = (Math.random() - 0.5) * 0.2;
+                    return Math.max(0, price * (1 + fluctuation));
+                });
+                
+                var html = '';
+                for (var i = 0; i < currentProducts.length; i++) {
+                    html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + updatedPrices[i].toFixed(2) + '</span><span class="unit">/' + units[selectedCategory] + '</span></span></div>';
+                }
+                
+                document.getElementById('productList').innerHTML = html;
+                
+                var now = new Date();
+                var timeStr = now.getFullYear() + '-' + (now.getMonth()+1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0') + ' ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') + ':' + now.getSeconds().toString().padStart(2);
+                document.getElementById('updateTime').textContent = '更新时间: ' + timeStr;
+                saveUpdateTime(timeStr);
+                
+                loading.style.display = 'none';
+            }, 1000);
+        }
+
+        function saveUpdateTime(time) {
+            localStorage.setItem('lastUpdateTime', time);
+        }
+
+        function loadUpdateTime() {
+            var time = localStorage.getItem('lastUpdateTime');
+            if (time) {
+                document.getElementById('updateTime').textContent = '更新时间: ' + time;
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
