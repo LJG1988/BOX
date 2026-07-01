@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>LJG*日日皆过往</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        :root {
+            --pri: #1a3a3a; --pri-d: #0d1f1f; --sec: #c9a227; --sec-l: #e8d179;
+            --acc: #8b4513; --bg: #0a1515; --card: rgba(26, 58, 58, 0.7);
+            --bdr: rgba(201, 162, 39, 0.3); --txt: #f5f0e8; --txt-l: #a09080;
+            --sh: 0 4px 20px rgba(0, 0, 0, 0.4); --glow: 0 0 12px rgba(201, 162, 39, 0.4);
+            --orange: #e8863a;
+        }
+        html, body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; background: var(--bg); min-height: 100vh; color: var(--txt); overflow-x: hidden; }
+        .bg-deco { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; background: radial-gradient(ellipse at 20% 80%, rgba(201, 162, 39, .08) 0%, transparent 50%), radial-gradient(ellipse at 80% 20%, rgba(139, 69, 19, .08) 0%, transparent 50%), linear-gradient(180deg, #0a1515, #1a2a2a 50%, #0a1515); }
+        .lantern { position: absolute; width: 28px; height: 36px; background: linear-gradient(180deg, #c9a227, #8b4513); border-radius: 14px 14px 7px 7px; opacity: .55; animation: lfloat 4s ease-in-out infinite; box-shadow: 0 0 12px rgba(201, 162, 39, .5); }
+        .lantern::before { content: ''; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 14px; height: 5px; background: #5c3317; border-radius: 2px; }
+        .lantern::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 2px; height: 6px; background: #c9a227; }
+        @keyframes lfloat { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-10px) rotate(1deg); } }
+        .steam { position: absolute; width: 90px; height: 90px; background: radial-gradient(circle, rgba(255, 255, 255, .04) 0%, transparent 70%); border-radius: 50%; animation: rise 8s ease-in-out infinite; }
+        @keyframes rise { 0%,100% { transform: translateY(0) scale(1); opacity: .3; } 50% { transform: translateY(-25px) scale(1.2); opacity: .1; } }
+        .susuwatari { position: absolute; width: 20px; height: 20px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #555, #111); opacity: .4; animation: susu 6s ease-in-out infinite; }
+        .susuwatari::before, .susuwatari::after { content: ''; position: absolute; width: 5px; height: 6px; background: #fff; border-radius: 50%; top: 5px; }
+        .susuwatari::before { left: 4px; } .susuwatari::after { right: 4px; }
+        @keyframes susu { 0%,100% { transform: translate(0,0); } 25% { transform: translate(15px, -20px); } 50% { transform: translate(-10px, -35px); } 75% { transform: translate(20px, -15px); } }
+        .app { position: relative; z-index: 1; max-width: 100%; margin: 0 auto; min-height: 100vh; padding-bottom: 78px; }
+        .hdr { background: linear-gradient(180deg, var(--pri), var(--pri-d)); color: var(--sec); padding: 14px 20px; text-align: center; position: relative; border-bottom: 2px solid var(--bdr); box-shadow: var(--sh); }
+        .hdr h1 { font-size: 20px; font-weight: 700; letter-spacing: 4px; text-shadow: 0 0 12px rgba(201, 162, 39, .5); }
+        .search-area { padding: 10px 15px; position: relative; display: flex; gap: 8px; }
+        .search-area input { flex: 1; padding: 10px 14px; border: 1px solid var(--bdr); border-radius: 20px; background: var(--card); color: var(--txt); font-size: 13px; box-shadow: var(--sh); }
+        .search-area input:focus { outline: none; border-color: var(--sec); box-shadow: var(--glow); }
+        .search-results { position: absolute; top: 100%; left: 15px; right: 15px; background: var(--card); border: 1px solid var(--bdr); border-radius: 12px; box-shadow: var(--glow); z-index: 50; max-height: 300px; overflow-y: auto; display: none; backdrop-filter: blur(8px); }
+        .search-results.show { display: block; }
+        .search-item { padding: 10px 14px; border-bottom: 1px solid rgba(201, 162, 39, .1); cursor: pointer; }
+        .search-item:active { background: rgba(201, 162, 39, .15); }
+        .search-item .si-date { font-size: 11px; color: var(--sec); }
+        .search-item .si-text { font-size: 12px; color: var(--txt-l); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .search-bar-cd { padding: 10px 15px; position: relative; display: none; }
+        .search-bar-cd.active { display: block; }
+        .search-bar-cd input { width: 100%; padding: 10px 14px; border: 1px solid var(--bdr); border-radius: 20px; background: var(--card); color: var(--txt); font-size: 13px; box-shadow: var(--sh); }
+        .pg-wrap { padding: 12px 15px; min-height: calc(100vh - 130px); }
+        .pg { display: none; } .pg.on { display: block; }
+        .cal-hdr { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
+        .cal-hdr h2 { font-size: 15px; color: var(--sec); }
+        .cal-nav { display: flex; gap: 8px; }
+        .cal-nav button { background: var(--card); border: 1px solid var(--bdr); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 13px; color: var(--sec); transition: .2s; }
+        .cal-nav button:active { background: var(--sec); color: var(--pri-d); transform: scale(1.1); }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; background: var(--card); padding: 10px; border-radius: 20px; backdrop-filter: blur(4px); border: 1px solid var(--bdr); }
+        .wk { text-align: center; font-size: 10px; color: var(--sec); padding: 5px 0; font-weight: 500; }
+        .cal-day { height: 45px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; cursor: pointer; transition: .2s; background: rgba(0, 0, 0, .2); border: 1px solid transparent; }
+        .cal-day:active { background: rgba(201, 162, 39, .2); border-color: var(--bdr); }
+        .cal-day.om { color: var(--txt-l); opacity: .4; }
+        .cal-day.today { background: linear-gradient(135deg, var(--sec), var(--acc)); color: var(--pri-d); font-weight: 600; box-shadow: var(--glow); }
+        .cal-day.has { background: linear-gradient(135deg, rgba(201, 162, 39, .25), rgba(139, 69, 19, .25)); border: 1px solid var(--bdr); }
+        .cal-day .dn { font-size: 12px; font-weight: 500; } .cal-day .mi { font-size: 13px; margin-top: 1px; }
+        .fab { position: fixed; bottom: 88px; right: 14px; width: 54px; height: 54px; border-radius: 50%; border: 2px solid var(--sec); background: linear-gradient(135deg, #2a2a2a, #111); color: var(--sec); font-size: 22px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, .4), 0 0 10px rgba(201, 162, 39, .3); z-index: 100; display: flex; align-items: center; justify-content: center; }
+        .fab:active { transform: scale(1.08); }
+        .fab.hide-fab { display: none; }
+        .editor { position: fixed; inset: 0; background: var(--bg); z-index: 200; display: none; flex-direction: column; }
+        .editor.on { display: flex; }
+        .ed-hdr { background: linear-gradient(180deg, var(--pri), var(--pri-d)); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--bdr); }
+        .ed-hdr button { background: rgba(201, 162, 39, .2); border: 1px solid var(--bdr); color: var(--sec); padding: 7px 13px; border-radius: 24px; cursor: pointer; }
+        .ed-body { flex: 1; padding: 15px; overflow-y: auto; }
+        .ed-date { text-align: center; color: var(--sec); margin-bottom: 12px; font-size: 14px; }
+        .mood-sel { display: flex; justify-content: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+        .mood-opt { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; background: var(--card); border: 1px solid var(--bdr); transition: .2s; }
+        .mood-opt.sel { background: linear-gradient(135deg, var(--sec), var(--acc)); transform: scale(1.12); box-shadow: var(--glow); }
+        .mood-tip { text-align: center; font-size: 12px; color: var(--sec); margin-bottom: 12px; }
+        .ed-ta { width: 100%; min-height: 280px; border: 1px solid var(--bdr); border-radius: 18px; padding: 14px; background: var(--card); color: var(--txt); font-family: inherit; line-height: 1.6; font-size: 15px; }
+        .ed-ta:focus { outline: none; border-color: var(--sec); }
+        .media-prev { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+        .media-wrap { position: relative; width: 80px; height: 80px; cursor: pointer; }
+        .media-wrap img, .media-wrap video { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; border: 1px solid var(--bdr); background: #000; }
+        .media-del { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #f44336; color: white; border: none; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ed-toolbar { display: flex; gap: 15px; margin-top: 14px; justify-content: center; }
+        .tb-btn { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--bdr); background: var(--card); cursor: pointer; font-size: 20px; color: var(--sec); }
+        .tb-btn.rec { background: rgba(244, 67, 54, .4); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(244,67,54,.4); } 50% { box-shadow: 0 0 0 8px rgba(244,67,54,0); } }
+        .del-entry-btn, .edit-mode-btn { background: rgba(201, 162, 39, 0.2); border: 1px solid var(--bdr); color: var(--sec); border-radius: 24px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+        .del-entry-btn:active, .edit-mode-btn:active { background: var(--sec); color: var(--pri-d); }
+        .image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 500; display: none; align-items: center; justify-content: center; flex-direction: column; }
+        .image-modal.on { display: flex; }
+        .image-modal img, .image-modal video { max-width: 95%; max-height: 80%; object-fit: contain; border-radius: 12px; }
+        .image-modal-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 30px; cursor: pointer; }
+        .cd-list { display: flex; flex-direction: column; gap: 6px; }
+        .cd-card { background: var(--card); backdrop-filter: blur(8px); padding: 8px 12px; border: 1px solid var(--bdr); border-radius: 16px; transition: 0.1s; cursor: pointer; }
+        .cd-card.highlight { background: rgba(201, 162, 39, 0.4); border-color: var(--sec); box-shadow: var(--glow); animation: flash 0.5s ease; }
+        @keyframes flash { 0% { background: rgba(201,162,39,0.8); } 100% { background: rgba(201,162,39,0.2); } }
+        .cd-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+        .cd-title { font-size: 14px; font-weight: 700; color: var(--sec-l); flex: 2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .cd-stats { display: flex; align-items: center; gap: 20px; flex-shrink: 0; }
+        .days-stat, .years-stat { display: flex; align-items: baseline; gap: 3px; background: rgba(0, 0, 0, 0.35); padding: 2px 10px; border-radius: 24px; }
+        .days-number { font-size: 18px; font-weight: 800; color: var(--sec); }
+        .days-label { font-size: 9px; color: #ddc; }
+        .years-number { font-size: 16px; font-weight: 700; color: var(--orange); }
+        .years-label { font-size: 8px; color: var(--txt-l); }
+        .add-cd { width: 100%; padding: 12px; background: var(--card); border: 1.5px dashed var(--bdr); border-radius: 32px; color: var(--sec); font-size: 13px; margin-top: 12px; cursor: pointer; text-align: center; }
+        .context-menu { position: fixed; background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--sec); border-radius: 28px; padding: 8px 0; z-index: 400; box-shadow: var(--glow); min-width: 140px; display: none; flex-direction: column; }
+        .context-menu button { background: none; border: none; padding: 12px 20px; text-align: left; color: var(--txt); font-size: 14px; cursor: pointer; width: 100%; }
+        .context-menu button:active { background: rgba(201, 162, 39, 0.3); }
+        .context-menu .danger { color: #f44336; }
+        .st-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+        .st-card { background: var(--card); border-radius: 18px; padding: 8px 6px; text-align: center; backdrop-filter: blur(4px); border: 1px solid var(--bdr); }
+        .st-card .num { font-size: 18px; font-weight: 700; color: var(--sec); }
+        .st-card .lbl { font-size: 10px; color: var(--txt-l); margin-top: 2px; }
+        .year-cal-section, .mood-stats-section, .set-sec { background: var(--card); border-radius: 26px; padding: 14px; margin-bottom: 14px; backdrop-filter: blur(4px); border: 1px solid var(--bdr); }
+        .year-cal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .mini-month { background: rgba(0,0,0,.2); border-radius: 14px; padding: 6px; }
+        .mini-month .mm-title { font-size: 10px; color: var(--sec); text-align: center; margin-bottom: 4px; }
+        .mini-month .mm-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+        .mini-month .mm-day { font-size: 8px; text-align: center; cursor: pointer; color: var(--txt-l); padding: 2px 0; border-radius: 4px; display: flex; align-items: center; justify-content: center; gap: 1px; }
+        .mini-month .mm-day.has-entry { background: var(--orange); color: #fff; font-weight: 600; }
+        .mood-stats-list { margin-top: 8px; }
+        .mood-stat-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--bdr); }
+        .mood-stat-name { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+        .mood-stat-count { font-size: 14px; font-weight: 600; color: var(--sec); }
+        .mood-advice { background: rgba(201,162,39,0.1); border-radius: 16px; padding: 12px; margin-top: 12px; font-size: 12px; line-height: 1.5; color: var(--txt-l); border-left: 3px solid var(--sec); }
+        .modal { position: fixed; inset: 0; background: rgba(0, 0, 0, .85); display: none; align-items: center; justify-content: center; z-index: 300; padding: 20px; }
+        .modal.on { display: flex; }
+        .modal-c { background: var(--card); backdrop-filter: blur(12px); border-radius: 38px; padding: 22px; width: 100%; max-width: 340px; border: 1px solid var(--bdr); }
+        .fg { margin-bottom: 14px; }
+        .fg label { display: block; font-size: 12px; margin-bottom: 5px; color: var(--txt-l); }
+        .fg input, .fg select, .fg textarea { width: 100%; padding: 10px; border-radius: 22px; background: rgba(0, 0, 0, 0.4); border: 1px solid var(--bdr); color: var(--txt); }
+        .s-btn { width: 100%; padding: 10px; border-radius: 32px; cursor: pointer; margin-top: 6px; font-weight: 500; }
+        .s-btn.pri { background: linear-gradient(135deg, var(--sec), var(--acc)); color: var(--pri-d); border: none; }
+        .s-btn.sec { background: rgba(255,255,255,0.08); border: 1px solid var(--bdr); color: var(--txt); }
+        .bnav { position: fixed; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, var(--pri), var(--pri-d)); display: flex; backdrop-filter: blur(10px); border-top: 1px solid var(--bdr); padding: 6px 0; z-index: 100; }
+        .ni { flex: 1; display: flex; flex-direction: column; align-items: center; background: none; border: none; color: var(--txt-l); cursor: pointer; padding: 4px; }
+        .ni.on { color: var(--sec); }
+        .ni .ic { font-size: 20px; margin-bottom: 2px; }
+        .hidden { display: none; }
+        .loading-tip { position: fixed; bottom: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.85); color: var(--sec); padding: 12px 24px; border-radius: 40px; z-index: 500; font-size: 14px; display: none; backdrop-filter: blur(8px); }
+        .backup-info { font-size: 11px; color: var(--txt-l); margin-top: 8px; text-align: center; }
+        .mm-day.has-entry .mm-icon { font-size: 7px; }
+
+        /* 新增：当月日记聚合视图样式 */
+        .month-aggregate { background: var(--card); border-radius: 26px; padding: 12px 0; margin-top: 12px; border: 1px solid var(--bdr); backdrop-filter: blur(4px); }
+        .month-aggregate .agg-header { display: flex; justify-content: space-between; align-items: center; padding: 0 14px 10px 14px; border-bottom: 1px solid var(--bdr); }
+        .month-aggregate .agg-header h3 { font-size: 15px; color: var(--sec); }
+        .month-aggregate .agg-header .agg-nav button { background: transparent; border: 1px solid var(--bdr); color: var(--sec); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 12px; }
+        .month-aggregate .agg-list { padding: 6px 10px; max-height: 500px; overflow-y: auto; }
+        .agg-item { display: flex; flex-direction: column; gap: 4px; padding: 10px 6px; border-bottom: 1px solid rgba(201,162,39,0.12); }
+        .agg-item:last-child { border-bottom: none; }
+        .agg-item .agg-date { font-size: 13px; font-weight: 600; color: var(--sec-l); display: flex; align-items: center; gap: 6px; }
+        .agg-item .agg-date .weekday { font-weight: 400; font-size: 11px; color: var(--txt-l); }
+        .agg-item .agg-content { font-size: 13px; line-height: 1.5; color: var(--txt); white-space: pre-wrap; word-break: break-word; }
+        .agg-item .agg-media { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+        .agg-item .agg-media .agg-thumb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; border: 1px solid var(--bdr); cursor: pointer; transition: 0.2s; background: #111; }
+        .agg-item .agg-media .agg-thumb:active { transform: scale(0.95); }
+        .agg-empty { text-align: center; padding: 28px 0; color: var(--txt-l); font-size: 13px; }
+        .agg-password-modal .modal-c { max-width: 300px; }
+        .agg-password-modal .fg { margin-bottom: 8px; }
+        .toggle-stat-btn { margin-top: 8px; background: rgba(201,162,39,0.15); border: 1px solid var(--bdr); color: var(--sec); border-radius: 24px; padding: 8px 14px; font-size: 12px; cursor: pointer; width: 100%; }
+    </style>
+</head>
+<body>
+<div class="bg-deco"><div class="lantern" style="top:7%;left:7%"></div><div class="lantern" style="top:14%;right:9%"></div><div class="steam" style="bottom:18%;left:18%"></div><div class="susuwatari" style="top:25%;left:15%"></div></div>
+<div class="app">
+    <div class="hdr"><h1>LJG*拾光录</h1></div>
+    <div class="search-area" id="search-area"><input type="text" id="search-input" placeholder="🔍 搜索日记内容..." oninput="searchDiary()"><div class="search-results" id="search-results"></div></div>
+    <div class="search-bar-cd" id="search-bar-cd"><input type="text" id="cd-search-input" placeholder="🔍 搜索纪念日名称..." oninput="searchCD()"></div>
+    <div class="pg-wrap">
+        <div class="pg on" id="pg-cal">
+            <div class="cal-hdr"><h2 id="cal-month">2026年6月</h2><div class="cal-nav"><button onclick="chgMonth(-1)">◀</button><button onclick="chgMonth(1)">▶</button></div></div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <!-- 当月日记聚合视图 (默认隐藏) -->
+            <div id="monthAggregateWrapper" style="display:none;">
+                <div class="month-aggregate" id="monthAggregate">
+                    <div class="agg-header"><h3>📅 当月日记</h3><div class="agg-nav"><button onclick="changeAggMonth(-1)">◀</button><span id="aggMonthLabel" style="font-size:13px;color:var(--txt-l);margin:0 8px;"></span><button onclick="changeAggMonth(1)">▶</button></div></div>
+                    <div class="agg-list" id="aggList"></div>
+                </div>
+            </div>
+        </div>
+        <div class="pg" id="pg-cd"><div class="cd-list" id="cd-list"></div><button class="add-cd" onclick="openCdModal()">+ 添加纪念日</button></div>
+        <div class="pg" id="pg-st">
+            <div class="st-grid">
+                <div class="st-card"><div class="num" id="s-total">0</div><div class="lbl">日记总数</div></div>
+                <div class="st-card"><div class="num" id="s-chars">0</div><div class="lbl">日记总字数</div></div>
+                <div class="st-card"><div class="num" id="s-month">0</div><div class="lbl">本月日记</div></div>
+                <div class="st-card"><div class="num" id="s-photo">0</div><div class="lbl">照片/视频</div></div>
+            </div>
+            <div class="year-cal-section"><h3>📆 年度日历</h3><div class="year-cal-grid" id="year-cal-grid"></div></div>
+            <div class="mood-stats-section"><h3>📊 喜怒哀乐·近一年心情统计</h3><div id="mood-stats-area"></div></div>
+        </div>
+        <div class="pg" id="pg-set">
+            <div class="set-sec">
+                <h3>💾 数据备份（含照片视频）</h3>
+                <button class="s-btn pri" onclick="exportFullBackup()">📦 导出完整备份ZIP包</button>
+                <div class="backup-info">💡 导出一个包含所有日记和照片的ZIP文件，保存到手机后，可通过飞牛App上传到NAS保管</div>
+                <div style="height: 12px;"></div>
+                <button class="s-btn sec" onclick="openImportFile()">📂 选择备份文件恢复</button>
+                <input type="file" id="import-file" accept=".zip" style="display:none;" onchange="importZipFile(this)">
+                <div class="backup-info">💡 选择之前导出的ZIP备份文件，恢复所有日记和照片</div>
+            </div>
+            <div class="set-sec">
+                <h3>📖 日记统计视图</h3>
+                <button class="toggle-stat-btn" id="toggleAggBtn" onclick="toggleAggregate()">🔓 打开日记统计 (需密码)</button>
+                <div class="backup-info" style="margin-top:4px;">开启后可在日记页查看当月日记聚合</div>
+            </div>
+            <div class="set-sec">
+                <h3>🗑️ 危险操作</h3>
+                <button class="s-btn sec" onclick="clearAll()" style="color:#f44336;">清空所有数据</button>
+            </div>
+        </div>
+    </div>
+    <button class="fab" id="fabBtn" onclick="openEd()">✏️</button>
+    <div class="bnav"><button class="ni on" onclick="swPg('cal',this)"><span class="ic">📖</span><span class="lb">日记</span></button><button class="ni" onclick="swPg('cd',this)"><span class="ic">🎉</span><span class="lb">纪念日</span></button><button class="ni" onclick="swPg('st',this)"><span class="ic">📊</span><span class="lb">数据</span></button><button class="ni" onclick="swPg('set',this)"><span class="ic">👤</span><span class="lb">我的</span></button></div>
+</div>
+<div class="loading-tip" id="loadingTip">⏳ 处理中...</div>
+<div class="image-modal" id="imageModal"><div class="image-modal-close" onclick="closeImageModal()">✕</div><img id="modalImage" src=""><video id="modalVideo" controls style="max-width:95%;max-height:80%;display:none;"></video></div>
+
+<div class="editor" id="editor"><div class="ed-hdr"><button onclick="closeEd()">✕</button><h2 id="editorTitle">写日记</h2><button id="saveBtn" onclick="saveEntry()">✓ 保存</button><button id="editBtn" style="display:none;" onclick="enableEditMode()">✏️ 编辑</button></div><div class="ed-body"><div class="ed-date" id="ed-date"></div><div class="mood-sel"><div class="mood-opt" data-mood="happy" onclick="selMood(this)">😊</div><div class="mood-opt" data-mood="excited" onclick="selMood(this)">🤩</div><div class="mood-opt" data-mood="calm" onclick="selMood(this)">😌</div><div class="mood-opt" data-mood="sad" onclick="selMood(this)">😢</div><div class="mood-opt" data-mood="angry" onclick="selMood(this)">😠</div><div class="mood-opt" data-mood="stimulate" onclick="selMood(this)">🤯</div></div><div class="mood-tip" id="mood-tip"></div><textarea class="ed-ta" id="ed-content" placeholder="记录此刻的心情..." readonly></textarea><div class="media-prev" id="media-prev"></div><div class="ed-toolbar" id="edToolbar" style="display:none;"><button class="tb-btn" id="rec-btn" onclick="toggleRec()">🎤</button><button class="tb-btn" onclick="clickMediaBtn()">📷🎥</button><input type="file" id="media-input" class="hidden" accept="image/*,video/*" multiple></div><div style="margin-top: 15px; text-align: right;"><button class="del-entry-btn" id="delBtn" onclick="deleteCurrentEntry()" style="display:none;">🗑️ 删除当天日记</button></div></div></div>
+
+<div class="modal" id="cd-modal"><div class="modal-c"><h3>✨ 纪念日</h3><div class="fg"><label>标题</label><input type="text" id="cd-title" placeholder="例如：相遇纪念日"></div><div style="display:flex;gap:8px;margin-bottom:12px"><button id="cd-type-solar" class="s-btn pri" style="margin:0" onclick="switchCdType('solar')">☀️ 阳历</button><button id="cd-type-lunar" class="s-btn sec" style="margin:0" onclick="switchCdType('lunar')">🌙 农历</button></div><div id="cd-solar-fg"><div class="fg"><label>日期</label><input type="date" id="cd-date"></div></div><div id="cd-lunar-fg" class="hidden"><div class="fg"><label>农历年份</label><input type="number" id="cd-lunar-year" placeholder="例如 2000" value="2000"></div><div class="fg"><label>农历月</label><select id="cd-lunar-month"><option value="1">正月</option><option value="2">二月</option><option value="3">三月</option><option value="4">四月</option><option value="5">五月</option><option value="6">六月</option><option value="7">七月</option><option value="8">八月</option><option value="9">九月</option><option value="10">十月</option><option value="11">冬月</option><option value="12">腊月</option></select></div><div class="fg"><label>农历日</label><select id="cd-lunar-day"></select></div><div class="hint" style="font-size:11px;color:var(--orange)" id="lunarPreview"></div></div><div class="m-acts" style="display:flex;gap:12px;margin-top:12px"><button class="s-btn sec" onclick="closeCdModal()">取消</button><button class="s-btn pri" onclick="saveCd()">保存</button></div></div></div>
+<div class="context-menu" id="contextMenu"><button id="menu-view">📖 查看详情</button><button id="menu-edit">✏️ 编辑</button><button class="danger" id="menu-del">🗑️ 删除</button></div>
+
+<!-- 密码弹窗 -->
+<div class="modal agg-password-modal" id="aggPasswordModal"><div class="modal-c"><h3 style="color:var(--sec);">🔐 请输入密码</h3><div class="fg"><input type="password" id="aggPwdInput" placeholder="密码" onkeydown="if(event.key==='Enter') verifyAggPwd();"></div><div style="display:flex;gap:12px;"><button class="s-btn sec" onclick="closeAggPwd()">取消</button><button class="s-btn pri" onclick="verifyAggPwd()">确定</button></div></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+// ==================== IndexedDB 媒体存储 ====================
+let db = null;
+const DB_NAME = 'LJG_MediaDB';
+const STORE_NAME = 'media';
+const DB_VERSION = 2;
+
+function openDB() {
+    return new Promise((resolve, reject) => {
+        if (db && db.name === DB_NAME) { resolve(db); return; }
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => { db = request.result; resolve(db); };
+        request.onupgradeneeded = (event) => {
+            const dbRef = event.target.result;
+            if (!dbRef.objectStoreNames.contains(STORE_NAME)) {
+                dbRef.createObjectStore(STORE_NAME, { keyPath: 'id' });
+            }
+        };
+    });
+}
+
+async function saveMediaToDB(mediaId, file, type) {
+    const dbRef = await openDB();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const base64Data = reader.result;
+            const tx = dbRef.transaction([STORE_NAME], 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            let mimeType = type || file.type || 'image/jpeg';
+            const request = store.put({ 
+                id: mediaId, 
+                data: base64Data, 
+                type: mimeType, 
+                timestamp: Date.now() 
+            });
+            request.onsuccess = () => resolve();
+            request.onerror = () => reject(request.error);
+        };
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+}
+
+async function loadMediaFromDB(mediaId) {
+    const dbRef = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbRef.transaction([STORE_NAME], 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.get(mediaId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function deleteMediaFromDB(mediaId) {
+    const dbRef = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbRef.transaction([STORE_NAME], 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.delete(mediaId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getAllMedia() {
+    const dbRef = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbRef.transaction([STORE_NAME], 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function clearAllMedia() {
+    const dbRef = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = dbRef.transaction([STORE_NAME], 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.clear();
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+function base64ToBlob(base64, mimeType) {
+    const byteString = atob(base64.split(',')[1]);
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeType });
+}
+
+// ==================== 农历库 ====================
+const lunarInfo = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06b58,0x05ac0,0x0ab60,0x096d5,0x092e0,0x0c960,0x0d954,0x0d4a0,0x0da50,0x07552,0x056a0,0x0abb7,0x025d0,0x092d0,0x0cab5,0x0a950,0x0b4a0,0x0baa4,0x0ad50,0x055d9,0x04ba0,0x0a5b0,0x15176,0x052b0,0x0a930,0x07954,0x06aa0,0x0ad50,0x05b52,0x04b60,0x0a6e6,0x0a4e0,0x0d260,0x0ea65,0x0d530,0x05aa0,0x076a3,0x096d0,0x04afb,0x04ad0,0x0a4d0,0x1d0b6,0x0d250,0x0d520,0x0dd45,0x0b5a0,0x056d0,0x055b2,0x049b0,0x0a577,0x0a4b0,0x0aa50,0x1b255,0x06d20,0x0ada0,0x14b63];
+
+function lYearDays(y) { let s=348; for(let i=0x8000;i>0x8;i>>=1) s+=(lunarInfo[y-1900]&i)?1:0; return s+leapDays(y); }
+function leapMonth(y) { return lunarInfo[y-1900]&0xf; }
+function leapDays(y) { return leapMonth(y)?((lunarInfo[y-1900]&0x10000)?30:29):0; }
+function monthDays(y,m) { return (lunarInfo[y-1900]&(0x10000>>m))?30:29; }
+
+function solarToLunar(year, month, day) {
+    let baseDate = new Date(1900, 0, 31);
+    let targetDate = new Date(year, month - 1, day);
+    let offset = Math.floor((targetDate - baseDate) / 86400000);
+    let lunarYear = 1900;
+    let daysInLunarYear = lYearDays(lunarYear);
+    while (offset >= daysInLunarYear) {
+        offset -= daysInLunarYear;
+        lunarYear++;
+        daysInLunarYear = lYearDays(lunarYear);
+    }
+    let lunarMonth = 1;
+    let leap = leapMonth(lunarYear);
+    let isLeapMonth = false;
+    for (let i = 1; i <= 12; i++) {
+        let daysInMonth;
+        if (leap > 0 && i === leap + 1 && !isLeapMonth) {
+            daysInMonth = leapDays(lunarYear);
+            isLeapMonth = true;
+            i--;
+        } else {
+            daysInMonth = monthDays(lunarYear, i);
+        }
+        if (offset < daysInMonth) {
+            lunarMonth = i;
+            break;
+        }
+        offset -= daysInMonth;
+        if (leap > 0 && i === leap && !isLeapMonth) {
+            i++;
+        }
+    }
+    let lunarDay = offset + 1;
+    return { year: lunarYear, month: lunarMonth, day: lunarDay };
+}
+
+function lunarToSolar(lYear, lMonth, lDay) { 
+    let offset=0; 
+    for(let i=1900;i<lYear;i++) offset+=lYearDays(i); 
+    let leap=leapMonth(lYear),isAdd=false; 
+    for(let i=1;i<lMonth;i++) { 
+        if(!isAdd&&leap>0&&i===leap) { 
+            offset+=leapDays(lYear); 
+            isAdd=true; 
+        } 
+        offset+=monthDays(lYear,i); 
+    } 
+    offset+=lDay-1; 
+    let base=new Date(1900,0,31); 
+    let res=new Date(base.getTime()+offset*86400000); 
+    return {year:res.getFullYear(),month:res.getMonth()+1,day:res.getDate()}; 
+}
+
+function getLunarDateInYear(targetYear, lunarMonth, lunarDay) {
+    let startDate = new Date(targetYear, 0, 1);
+    let endDate = new Date(targetYear + 1, 0, 1);
+    let current = new Date(startDate);
+    while (current < endDate) {
+        let lunar = solarToLunar(
+            current.getFullYear(),
+            current.getMonth() + 1,
+            current.getDate()
+        );
+        if (lunar.month === lunarMonth && lunar.day === lunarDay) {
+            return {
+                year: current.getFullYear(),
+                month: current.getMonth() + 1,
+                day: current.getDate()
+            };
+        }
+        current.setDate(current.getDate() + 1);
+    }
+    return { year: targetYear, month: 1, day: 1 };
+}
+
+let entries=[], countdowns=[], curDate=new Date(), selDate=new Date(), selectedMood='', tempMediaList=[], recording=false, recorder=null, audioChunks=[], isEditMode=false;
+let aggMonth = new Date();
+let aggEnabled = false;
+
+function pad(n){return n<10?'0'+n:n;}
+function fmtDate(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function findEntry(ds){return entries.find(e=>e.date===ds);}
+
+const moodIcons = { happy:'😊', excited:'🤩', calm:'😌', sad:'😢', angry:'😠', stimulate:'💕' };
+const moodNames = { happy:'开心', excited:'激动', calm:'平静', sad:'难过', angry:'生气', stimulate:'刺激' };
+
+async function init(){ 
+    try{ entries=JSON.parse(localStorage.getItem('ljg_entries')||'[]'); countdowns=JSON.parse(localStorage.getItem('ljg_cds')||'[]'); }catch(e){} 
+    await openDB(); 
+    renderCal(); renderCds(); renderStats(); 
+    const saved = localStorage.getItem('ljg_agg_enabled');
+    aggEnabled = saved === 'true';
+    updateAggregateVisibility();
+    renderAggregate();
+    // 初始化农历日下拉
+    for(let i=1;i<=30;i++){ let opt=document.createElement('option'); opt.value=i; opt.textContent=i+'日'; document.getElementById('cd-lunar-day').appendChild(opt); }
+    updateLunarPreview();
+}
+
+function renderCal(){
+    let y=curDate.getFullYear(),m=curDate.getMonth(); 
+    document.getElementById('cal-month').innerText=y+'年'+(m+1)+'月'; 
+    let fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate(),dpm=new Date(y,m,0).getDate(),g=document.getElementById('cal-grid'); 
+    g.innerHTML=''; 
+    for(let i=0;i<7;i++){ let d=document.createElement('div'); d.className='wk'; d.innerText=['日','一','二','三','四','五','六'][i]; g.appendChild(d); } 
+    for(let i=fd-1;i>=0;i--){ let d=document.createElement('div'); d.className='cal-day om'; d.innerHTML='<span class="dn">'+(dpm-i)+'</span>'; g.appendChild(d); } 
+    let today=new Date(); 
+    for(let i=1;i<=dim;i++){ let ds=y+'-'+pad(m+1)+'-'+pad(i),e=findEntry(ds),d=document.createElement('div'); d.className='cal-day'; if(y===today.getFullYear()&&m===today.getMonth()&&i===today.getDate()) d.classList.add('today'); if(e){ d.classList.add('has'); d.innerHTML='<span class="dn">'+i+'</span><span class="mi">'+(moodIcons[e.mood]||'📝')+'</span>'; } else { d.innerHTML='<span class="dn">'+i+'</span>'; } d.onclick=(function(date){return function(){openEdFor(date,false);};})(ds); g.appendChild(d); } 
+    let rem=42-(fd+dim); for(let i=1;i<=rem;i++){ let d=document.createElement('div'); d.className='cal-day om'; d.innerHTML='<span class="dn">'+i+'</span>'; g.appendChild(d); } 
+}
+
+function chgMonth(d){curDate.setMonth(curDate.getMonth()+d);renderCal(); if(aggEnabled) renderAggregate();}
+
+function swPg(pg,el){
+    document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+    document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+    document.getElementById('pg-'+pg).classList.add('on');
+    el.classList.add('on');
+    let fab=document.getElementById('fabBtn');
+    if(pg==='cal') fab.classList.remove('hide-fab');
+    else fab.classList.add('hide-fab');
+    let searchArea=document.getElementById('search-area');
+    let searchCD=document.getElementById('search-bar-cd');
+    if(pg==='cal') searchArea.style.display='flex';
+    else searchArea.style.display='none';
+    if(pg==='cd') searchCD.classList.add('active');
+    else searchCD.classList.remove('active');
+    if(pg==='st') renderStats();
+    if(pg==='cal' && aggEnabled) renderAggregate();
+}
+
+// ========== 聚合视图开关 ==========
+function toggleAggregate(){
+    if (aggEnabled) {
+        aggEnabled = false;
+        localStorage.setItem('ljg_agg_enabled', 'false');
+        document.getElementById('toggleAggBtn').innerHTML = '🔓 打开日记统计 (需密码)';
+        updateAggregateVisibility();
+        return;
+    }
+    document.getElementById('aggPasswordModal').classList.add('on');
+    document.getElementById('aggPwdInput').value = '';
+    document.getElementById('aggPwdInput').focus();
+}
+function closeAggPwd(){ document.getElementById('aggPasswordModal').classList.remove('on'); }
+function verifyAggPwd(){
+    const pwd = document.getElementById('aggPwdInput').value.trim();
+    if (pwd === 'xy521') {
+        aggEnabled = true;
+        localStorage.setItem('ljg_agg_enabled', 'true');
+        document.getElementById('toggleAggBtn').innerHTML = '🔒 关闭日记统计';
+        updateAggregateVisibility();
+        renderAggregate();
+        closeAggPwd();
+    } else {
+        alert('密码错误');
+    }
+}
+function updateAggregateVisibility(){
+    const wrapper = document.getElementById('monthAggregateWrapper');
+    if (aggEnabled) {
+        wrapper.style.display = 'block';
+        renderAggregate();
+    } else {
+        wrapper.style.display = 'none';
+    }
+    if (aggEnabled) {
+        document.getElementById('toggleAggBtn').innerHTML = '🔒 关闭日记统计';
+    } else {
+        document.getElementById('toggleAggBtn').innerHTML = '🔓 打开日记统计 (需密码)';
+    }
+}
+
+// ========== 聚合视图渲染 ==========
+function renderAggregate(){
+    if (!aggEnabled) return;
+    const y = aggMonth.getFullYear(), m = aggMonth.getMonth();
+    document.getElementById('aggMonthLabel').innerText = y + '年' + (m+1) + '月';
+    const list = document.getElementById('aggList');
+    const monthEntries = entries.filter(e => {
+        const d = new Date(e.date);
+        return d.getFullYear() === y && d.getMonth() === m;
+    }).sort((a,b) => a.date.localeCompare(b.date));
+    if (monthEntries.length === 0) {
+        list.innerHTML = '<div class="agg-empty">🌙 本月还没有日记</div>';
+        return;
+    }
+    let html = '';
+    const weekdays = ['日','一','二','三','四','五','六'];
+    for (const entry of monthEntries) {
+        const d = new Date(entry.date);
+        const wd = weekdays[d.getDay()];
+        const content = entry.content || '（无文字内容）';
+        let mediaHtml = '';
+        if (entry.media && entry.media.length) {
+            const mediaItems = entry.media.slice(0, 5);
+            mediaHtml = '<div class="agg-media">';
+            for (const mid of mediaItems) {
+                const id = mid.id || mid;
+                mediaHtml += `<img class="agg-thumb" data-mediaid="${id}" src="" alt="缩略图" onclick="openAggMedia('${id}')" style="background:#222;">`;
+            }
+            if (entry.media.length > 5) mediaHtml += `<span style="font-size:11px;color:var(--txt-l);align-self:center;">+${entry.media.length-5}</span>`;
+            mediaHtml += '</div>';
+        }
+        html += `<div class="agg-item">
+            <div class="agg-date">${entry.date} <span class="weekday">周${wd}</span></div>
+            <div class="agg-content">${escapeHtml(content)}</div>
+            ${mediaHtml}
+        </div>`;
+    }
+    list.innerHTML = html;
+    list.querySelectorAll('.agg-thumb').forEach(async (img) => {
+        const mid = img.dataset.mediaid;
+        try {
+            const data = await loadMediaFromDB(mid);
+            if (data && data.data) {
+                img.src = data.data;
+            } else {
+                img.style.background = '#444';
+            }
+        } catch(e) { img.style.background = '#444'; }
+    });
+}
+function changeAggMonth(delta){
+    aggMonth.setMonth(aggMonth.getMonth() + delta);
+    renderAggregate();
+}
+async function openAggMedia(mediaId){
+    try {
+        const data = await loadMediaFromDB(mediaId);
+        if (!data || !data.data) { alert('媒体文件不存在'); return; }
+        const type = data.type || 'image/jpeg';
+        const isVideo = type.startsWith('video');
+        const modal = document.getElementById('imageModal');
+        const img = document.getElementById('modalImage');
+        const vid = document.getElementById('modalVideo');
+        if (isVideo) {
+            vid.src = data.data;
+            vid.style.display = 'block';
+            img.style.display = 'none';
+            vid.load();
+        } else {
+            img.src = data.data;
+            img.style.display = 'block';
+            vid.style.display = 'none';
+            vid.pause();
+        }
+        modal.classList.add('on');
+    } catch(e) { alert('加载媒体失败'); }
+}
+function escapeHtml(str){ if (!str) return ''; return str.replace(/[&<>]/g,function(m){ if (m==='&') return '&amp;'; if (m==='<') return '&lt;'; if (m==='>') return '&gt;'; return m; }); }
+
+// ========== 原有功能函数 ==========
+function openEd(){selDate=new Date();openEdFor(fmtDate(selDate),true);}
+
+async function openEdFor(ds,isNew){
+    selDate=new Date(ds);
+    let e=findEntry(ds);
+    document.getElementById('ed-date').innerHTML=selDate.getFullYear()+'年'+(selDate.getMonth()+1)+'月'+selDate.getDate()+'日'+(e?' <span style="font-size:11px;color:#f44336">(已有日记)</span>':'');
+    document.getElementById('ed-content').value=e?.content||'';
+    selMoodByVal(e?.mood||'');
+    tempMediaList=e?.media?[...e.media]:[];
+    await renderMediaPreview();
+    isEditMode=!!e?false:true;
+    if(!isNew && e) isEditMode=false; else isEditMode=true;
+    setEditMode();
+    document.getElementById('editor').classList.add('on');
+}
+
+function setEditMode(){
+    let ta=document.getElementById('ed-content');
+    let saveBtn=document.getElementById('saveBtn');
+    let editBtn=document.getElementById('editBtn');
+    let delBtn=document.getElementById('delBtn');
+    let toolbar=document.getElementById('edToolbar');
+    let editorTitle=document.getElementById('editorTitle');
+    if(isEditMode){
+        ta.readOnly=false;
+        saveBtn.style.display='block';
+        editBtn.style.display='none';
+        delBtn.style.display='block';
+        toolbar.style.display='flex';
+        editorTitle.innerText='编辑日记';
+    } else {
+        ta.readOnly=true;
+        saveBtn.style.display='none';
+        editBtn.style.display='block';
+        delBtn.style.display='none';
+        toolbar.style.display='none';
+        editorTitle.innerText='查看日记';
+    }
+}
+
+function enableEditMode(){isEditMode=true;setEditMode();}
+function closeEd(){document.getElementById('editor').classList.remove('on');tempMediaList=[];}
+
+function selMood(el){
+    if(!isEditMode)return;
+    document.querySelectorAll('.mood-opt').forEach(m=>m.classList.remove('sel'));
+    el.classList.add('sel');
+    selectedMood=el.getAttribute('data-mood');
+    document.getElementById('mood-tip').innerText='当前心情：'+moodNames[selectedMood];
+}
+
+function selMoodByVal(m){
+    if(m){
+        let el=document.querySelector(`.mood-opt[data-mood="${m}"]`);
+        if(el)el.classList.add('sel');
+        selectedMood=m;
+        document.getElementById('mood-tip').innerText='当前心情：'+moodNames[m];
+    } else selectedMood='';
+}
+
+async function saveEntry(){ 
+    let loading=document.getElementById('loadingTip'); 
+    loading.style.display='block'; 
+    loading.textContent='⏳ 保存中...'; 
+    try { 
+        let c=document.getElementById('ed-content').value, ds=fmtDate(selDate); 
+        let idx=entries.findIndex(e=>e.date===ds); 
+        let entry={date:ds,content:c,mood:selectedMood,media:tempMediaList,createdAt:new Date().toISOString()}; 
+        if(idx>=0) entries[idx]=entry; 
+        else entries.push(entry); 
+        localStorage.setItem('ljg_entries',JSON.stringify(entries)); 
+        closeEd(); 
+        renderCal(); 
+        renderStats(); 
+        if(aggEnabled) renderAggregate();
+        alert('日记已保存！'); 
+    } catch(e){ 
+        alert('保存失败：'+e.message); 
+    } finally{ 
+        loading.style.display='none'; 
+    } 
+}
+
+function deleteCurrentEntry(){
+    let ds=fmtDate(selDate);
+    let idx=entries.findIndex(e=>e.date===ds);
+    if(idx===-1){alert('当天没有日记可删除');return;}
+    if(confirm(`确定删除 ${ds} 的日记吗？`)){
+        entries.splice(idx,1);
+        localStorage.setItem('ljg_entries',JSON.stringify(entries));
+        closeEd();
+        renderCal();
+        renderStats();
+        if(aggEnabled) renderAggregate();
+        alert('已删除');
+    }
+}
+
+function clickMediaBtn(){if(isEditMode)document.getElementById('media-input').click();}
+
+async function handleMedia(ev){ 
+    let files=ev.target.files; 
+    if(!files || files.length===0) return; 
+    let loading=document.getElementById('loadingTip'); 
+    loading.style.display='block'; 
+    loading.textContent = '⏳ 正在上传...';
+    try { 
+        for(let f of files){ 
+            let mediaId = Date.now()+'_'+Math.random().toString(36).substr(2,9); 
+            let mimeType = f.type || 'image/jpeg';
+            await saveMediaToDB(mediaId, f, mimeType); 
+            let mediaType = mimeType.startsWith('video')?'video':'image'; 
+            if (mimeType.startsWith('audio')) mediaType = 'audio';
+            tempMediaList.push({id:mediaId, type:mediaType, mime:mimeType}); 
+        } 
+        await renderMediaPreview(); 
+    } catch(e){ 
+        console.error('上传失败:', e);
+        alert('上传失败：'+e.message); 
+    } finally{ 
+        loading.style.display='none'; 
+        document.getElementById('media-input').value=''; 
+    } 
+}
+
+async function renderMediaPreview(){ 
+    let html=''; 
+    for(let i=0;i<tempMediaList.length;i++){ 
+        let m=tempMediaList[i]; 
+        try {
+            let data=await loadMediaFromDB(m.id); 
+            if(data && data.data){ 
+                let src = data.data;
+                let displayType = m.type || (data.type ? (data.type.startsWith('video') ? 'video' : 'image') : 'image');
+                if(displayType==='video' || (data.type && data.type.startsWith('video'))) {
+                    html+=`<div class="media-wrap"><video src="${src}" muted playsinline onclick="showMedia('${src}','video')"></video><button class="media-del" onclick="removeMedia(${i});event.stopPropagation()">×</button></div>`; 
+                } else {
+                    html+=`<div class="media-wrap"><img src="${src}" onclick="showMedia('${src}','image')"><button class="media-del" onclick="removeMedia(${i});event.stopPropagation()">×</button></div>`; 
+                }
+            } else { 
+                html+=`<div class="media-wrap"><div style="width:80px;height:80px;background:#333;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">❌无数据</div><button class="media-del" onclick="removeMedia(${i});event.stopPropagation()">×</button></div>`; 
+            } 
+        } catch(e) {
+            html+=`<div class="media-wrap"><div style="width:80px;height:80px;background:#333;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;">❌</div><button class="media-del" onclick="removeMedia(${i});event.stopPropagation()">×</button></div>`; 
+        }
+    } 
+    document.getElementById('media-prev').innerHTML=html; 
+}
+
+async function removeMedia(idx){ 
+    let m=tempMediaList[idx]; 
+    if(m&&m.id) await deleteMediaFromDB(m.id); 
+    tempMediaList.splice(idx,1); 
+    await renderMediaPreview(); 
+}
+
+function showMedia(url,type){
+    let modal=document.getElementById('imageModal');
+    let img=document.getElementById('modalImage');
+    let vid=document.getElementById('modalVideo');
+    if(type==='image'){
+        img.src=url;
+        img.style.display='block';
+        vid.style.display='none';
+    } else {
+        vid.src=url;
+        vid.style.display='block';
+        img.style.display='none';
+    }
+    modal.classList.add('on');
+}
+
+function closeImageModal(){document.getElementById('imageModal').classList.remove('on');}
+
+async function toggleRec(){
+    if(!isEditMode)return;
+    if(recording){
+        if(recorder)recorder.stop();
+        recording=false;
+        document.getElementById('rec-btn').classList.remove('rec');
+        return;
+    }
+    try{
+        const s=await navigator.mediaDevices.getUserMedia({audio:true});
+        recorder=new MediaRecorder(s);
+        audioChunks=[];
+        recorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data);};
+        recorder.onstop=async()=>{
+            try {
+                let blob=new Blob(audioChunks,{type:'audio/webm'}); 
+                let mediaId=Date.now()+'_audio_'+Math.random().toString(36).substr(2,6); 
+                await saveMediaToDB(mediaId, blob, 'audio/webm'); 
+                tempMediaList.push({id:mediaId,type:'audio',mime:'audio/webm'}); 
+                await renderMediaPreview(); 
+                s.getTracks().forEach(t=>t.stop());
+            } catch(e) {
+                console.error('录音保存失败:', e);
+            }
+        };
+        recorder.start();
+        recording=true;
+        document.getElementById('rec-btn').classList.add('rec');
+    }catch(e){
+        alert('无法获取麦克风权限');
+    }
+}
+
+function getCountdownInfo(type, data) {
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let startYear, targetDate;
+    if (type === 'solar') {
+        let parts = data.date.split('-');
+        let month = parseInt(parts[1]), day = parseInt(parts[2]);
+        startYear = parseInt(parts[0]);
+        let thisYearDate = new Date(today.getFullYear(), month - 1, day);
+        thisYearDate.setHours(0, 0, 0, 0);
+        if (thisYearDate < today) {
+            targetDate = new Date(today.getFullYear() + 1, month - 1, day);
+        } else {
+            targetDate = thisYearDate;
+        }
+        targetDate.setHours(0, 0, 0, 0);
+    } else {
+        let lunarMonth = data.lunarMonth;
+        let lunarDay = data.lunarDay;
+        startYear = data.lunarYear;
+        let checkDate = new Date(today);
+        checkDate.setHours(0, 0, 0, 0);
+        let maxDays = 366;
+        let foundDate = null;
+        for (let i = 0; i < maxDays; i++) {
+            let checkYear = checkDate.getFullYear();
+            let checkMonth = checkDate.getMonth() + 1;
+            let checkDay = checkDate.getDate();
+            let lunar = solarToLunar(checkYear, checkMonth, checkDay);
+            if (lunar.month === lunarMonth && lunar.day === lunarDay) {
+                foundDate = new Date(checkDate);
+                foundDate.setHours(0, 0, 0, 0);
+                break;
+            }
+            checkDate.setDate(checkDate.getDate() + 1);
+        }
+        if (foundDate) {
+            targetDate = foundDate;
+        } else {
+            let thisYearSolar = getLunarDateInYear(today.getFullYear(), lunarMonth, lunarDay);
+            let thisYearDate = new Date(thisYearSolar.year, thisYearSolar.month - 1, thisYearSolar.day);
+            thisYearDate.setHours(0, 0, 0, 0);
+            if (thisYearDate < today) {
+                let nextYearSolar = getLunarDateInYear(today.getFullYear() + 1, lunarMonth, lunarDay);
+                targetDate = new Date(nextYearSolar.year, nextYearSolar.month - 1, nextYearSolar.day);
+            } else {
+                targetDate = thisYearDate;
+            }
+            targetDate.setHours(0, 0, 0, 0);
+        }
+    }
+    let timeDiff = targetDate.getTime() - today.getTime();
+    let diffDays = Math.ceil(timeDiff / 86400000);
+    if (diffDays < 0) diffDays = 0;
+    let yearsPassed = today.getFullYear() - startYear;
+    if (yearsPassed < 0) yearsPassed = 0;
+    if (type === 'lunar') {
+        let thisYearCheck = new Date(today.getFullYear(), 0, 1);
+        let foundThisYear = null;
+        for (let i = 0; i < 366; i++) {
+            let checkYear = thisYearCheck.getFullYear();
+            let checkMonth = thisYearCheck.getMonth() + 1;
+            let checkDay = thisYearCheck.getDate();
+            let lunar = solarToLunar(checkYear, checkMonth, checkDay);
+            if (lunar.month === data.lunarMonth && lunar.day === data.lunarDay) {
+                foundThisYear = new Date(thisYearCheck);
+                foundThisYear.setHours(0, 0, 0, 0);
+                break;
+            }
+            thisYearCheck.setDate(thisYearCheck.getDate() + 1);
+        }
+        if (foundThisYear && foundThisYear > today) {
+            yearsPassed = Math.max(0, yearsPassed - 1);
+        }
+    } else {
+        let parts = data.date.split('-');
+        let month = parseInt(parts[1]), day = parseInt(parts[2]);
+        let thisYearDate = new Date(today.getFullYear(), month - 1, day);
+        thisYearDate.setHours(0, 0, 0, 0);
+        if (thisYearDate > today) {
+            yearsPassed = Math.max(0, yearsPassed - 1);
+        }
+    }
+    return { days: diffDays, years: yearsPassed };
+}
+
+function renderCds(){ 
+    let list=document.getElementById('cd-list'); 
+    if(!countdowns.length){ 
+        list.innerHTML='<div style="text-align:center;padding:40px;color:var(--txt-l)">✨ 暂无纪念日，点击下方添加</div>'; 
+        return; 
+    } 
+    let cdWithInfo=countdowns.map((cd,idx)=>{ 
+        let info=getCountdownInfo(cd.type,cd); 
+        return{cd,idx,days:info.days,years:info.years}; 
+    }); 
+    cdWithInfo.sort((a,b)=>a.days-b.days); 
+    let html=''; 
+    cdWithInfo.forEach(item=>{ 
+        let cd=item.cd,info={days:item.days,years:item.years}; 
+        html+=`<div class="cd-card" data-idx="${item.idx}" data-title="${escapeHtml(cd.title)}"><div class="cd-header"><div class="cd-title">${escapeHtml(cd.title)}</div><div class="cd-stats"><div class="days-stat"><span class="days-number">${info.days}</span><span class="days-label">天盼至</span></div><div class="years-stat"><span class="years-number">${info.years}</span><span class="years-label">春秋</span></div></div></div></div>`; 
+    }); 
+    list.innerHTML=html; 
+    attachLongPressEvents(); 
+}
+
+function attachLongPressEvents(){ 
+    document.querySelectorAll('.cd-card').forEach(card=>{ 
+        let timer; 
+        card.addEventListener('touchstart',(e)=>{ 
+            timer=setTimeout(()=>{ 
+                let idx=parseInt(card.dataset.idx); 
+                showContextMenu(e.touches[0].clientX,e.touches[0].clientY,idx); 
+            },500); 
+        }); 
+        card.addEventListener('touchend',()=>clearTimeout(timer)); 
+        card.addEventListener('touchmove',()=>clearTimeout(timer)); 
+    }); 
+}
+
+function showContextMenu(x,y,idx){ 
+    let menu=document.getElementById('contextMenu'); 
+    let cd=countdowns[idx]; 
+    let info=getCountdownInfo(cd.type,cd); 
+    let detailText=''; 
+    if(cd.type==='solar') detailText=`📅 ${cd.title}\n阳历日期：${cd.date}\n距离下次：${info.days}天\n已过${info.years}周年`; 
+    else detailText=`📅 ${cd.title}\n农历日期：${cd.lunarYear}年 ${['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','冬月','腊月'][cd.lunarMonth-1]} ${cd.lunarDay}日\n距离下次：${info.days}天\n已过${info.years}周年`; 
+    menu.style.display='flex'; 
+    menu.style.left=x+'px'; 
+    menu.style.top=y+'px'; 
+    document.getElementById('menu-view').onclick=()=>{ 
+        alert(detailText); 
+        menu.style.display='none'; 
+    }; 
+    document.getElementById('menu-edit').onclick=()=>{ 
+        editCd(idx); 
+        menu.style.display='none'; 
+    }; 
+    document.getElementById('menu-del').onclick=()=>{ 
+        if(confirm('删除纪念日？')){ 
+            countdowns.splice(idx,1); 
+            localStorage.setItem('ljg_cds',JSON.stringify(countdowns)); 
+            renderCds(); 
+        } 
+        menu.style.display='none'; 
+    }; 
+    setTimeout(()=>{ 
+        document.addEventListener('click',function closeMenu(){ 
+            menu.style.display='none'; 
+            document.removeEventListener('click',closeMenu); 
+        }); 
+    },100); 
+}
+
+function editCd(i){ 
+    let cd=countdowns[i]; 
+    openCdModal(); 
+    document.getElementById('cd-title').value=cd.title; 
+    if(cd.type==='solar'){ 
+        switchCdType('solar'); 
+        document.getElementById('cd-date').value=cd.date; 
+    } else { 
+        switchCdType('lunar'); 
+        document.getElementById('cd-lunar-year').value=cd.lunarYear; 
+        document.getElementById('cd-lunar-month').value=cd.lunarMonth; 
+        document.getElementById('cd-lunar-day').value=cd.lunarDay; 
+        updateLunarPreview(); 
+    } 
+    countdowns.splice(i,1); 
+}
+
+function searchCD(){ 
+    let kw=document.getElementById('cd-search-input').value.trim().toLowerCase(); 
+    if(!kw){ 
+        document.querySelectorAll('.cd-card').forEach(c=>c.classList.remove('highlight')); 
+        return; 
+    } 
+    let matched=false; 
+    document.querySelectorAll('.cd-card').forEach(card=>{ 
+        let title=card.dataset.title.toLowerCase(); 
+        if(title.includes(kw)){ 
+            card.classList.add('highlight'); 
+            matched=true; 
+            setTimeout(()=>card.scrollIntoView({behavior:'smooth',block:'center'}),100); 
+        } else card.classList.remove('highlight'); 
+    }); 
+    if(!matched) alert('未找到匹配的纪念日'); 
+}
+
+function openCdModal(){ 
+    document.getElementById('cd-modal').classList.add('on'); 
+    document.getElementById('cd-title').value=''; 
+    document.getElementById('cd-date').value=''; 
+    switchCdType('solar'); 
+}
+
+function closeCdModal(){ document.getElementById('cd-modal').classList.remove('on'); }
+
+function switchCdType(t){ 
+    let solarDiv=document.getElementById('cd-solar-fg'),lunarDiv=document.getElementById('cd-lunar-fg'); 
+    if(t==='solar'){ 
+        solarDiv.classList.remove('hidden'); 
+        lunarDiv.classList.add('hidden'); 
+        document.getElementById('cd-type-solar').className='s-btn pri'; 
+        document.getElementById('cd-type-lunar').className='s-btn sec'; 
+    } else { 
+        solarDiv.classList.add('hidden'); 
+        lunarDiv.classList.remove('hidden'); 
+        document.getElementById('cd-type-solar').className='s-btn sec'; 
+        document.getElementById('cd-type-lunar').className='s-btn pri'; 
+        updateLunarPreview(); 
+    } 
+}
+
+function updateLunarPreview(){ 
+    let y=parseInt(document.getElementById('cd-lunar-year').value)||2000,
+        m=parseInt(document.getElementById('cd-lunar-month').value),
+        d=parseInt(document.getElementById('cd-lunar-day').value); 
+    if(y>=1900&&y<=2100){ 
+        let s=lunarToSolar(y,m,d); 
+        document.getElementById('lunarPreview').innerHTML=`📅 公历: ${s.year}-${pad(s.month)}-${pad(s.day)}`; 
+    } else document.getElementById('lunarPreview').innerHTML='⚠️ 年份需1900-2100'; 
+}
+
+function saveCd(){ 
+    let title=document.getElementById('cd-title').value.trim(); 
+    if(!title){ alert('请输入标题'); return; } 
+    let type=document.getElementById('cd-lunar-fg').classList.contains('hidden')?'solar':'lunar'; 
+    let obj={title,type}; 
+    if(type==='solar'){ 
+        let date=document.getElementById('cd-date').value; 
+        if(!date){ alert('请选择日期'); return; } 
+        obj.date=date; 
+    } else { 
+        let y=parseInt(document.getElementById('cd-lunar-year').value),
+            m=parseInt(document.getElementById('cd-lunar-month').value),
+            d=parseInt(document.getElementById('cd-lunar-day').value); 
+        if(!y||y<1900||y>2100){ alert('农历年份1900-2100'); return; } 
+        obj.lunarYear=y; obj.lunarMonth=m; obj.lunarDay=d; 
+        let solar=lunarToSolar(y,m,d); 
+        obj.date=`${solar.year}-${pad(solar.month)}-${pad(solar.day)}`; 
+    } 
+    countdowns.push(obj); 
+    localStorage.setItem('ljg_cds',JSON.stringify(countdowns)); 
+    closeCdModal(); 
+    renderCds(); 
+}
+
+function renderMoodStats() {
+    let oneYearAgo = new Date();
+    oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+    let recentEntries = entries.filter(e => new Date(e.date) >= oneYearAgo);
+    let moodCount = { happy:0, excited:0, calm:0, sad:0, angry:0, stimulate:0 };
+    recentEntries.forEach(e => { if(e.mood && moodCount[e.mood] !== undefined) moodCount[e.mood]++; });
+    let total = recentEntries.length;
+    let area = document.getElementById('mood-stats-area');
+    if (total === 0) {
+        area.innerHTML = '<div style="text-align:center;padding:20px;">近一年暂无心情数据</div>';
+        return;
+    }
+    let moodOrder = ['happy','excited','calm','sad','angry','stimulate'];
+    let html = '<div class="mood-stats-list">';
+    for (let m of moodOrder) {
+        let count = moodCount[m];
+        let pct = Math.round(count / total * 100);
+        html += `<div class="mood-stat-item">
+                    <div class="mood-stat-name">${moodIcons[m]} ${moodNames[m]}</div>
+                    <div class="mood-stat-count">${count}次 (${pct}%)</div>
+                </div>`;
+    }
+    html += '</div>';
+    let topMood = moodOrder.reduce((a,b) => moodCount[a] > moodCount[b] ? a : b);
+    let topPct = Math.round(moodCount[topMood] / total * 100);
+    let advice = '';
+    switch(topMood) {
+        case 'happy': advice = `✨ 你近一年最常感到「开心」(${topPct}%)，继续保持这份阳光，生活会更美好！`; break;
+        case 'excited': advice = `⚡ 你近一年最常感到「激动」(${topPct}%)，充满热情的你，记得适当放慢脚步休息。`; break;
+        case 'calm': advice = `🍃 你近一年最常感到「平静」(${topPct}%)，心态平和是你的优势，偶尔也去尝试新鲜事物吧。`; break;
+        case 'sad': advice = `🌧️ 你近一年「难过」的比例较高(${topPct}%)，记得多和朋友倾诉，给自己一些温柔。`; break;
+        case 'angry': advice = `🔥 你近一年「生气」的次数较多(${topPct}%)，试着深呼吸，找些放松的方式调节情绪。`; break;
+        case 'stimulate': advice = `💕 你近一年「刺激」体验较多(${topPct}%)，生活充满挑战，但也要注意劳逸结合哦！`; break;
+        default: advice = `📝 继续记录心情，让每一天都有迹可循。`;
+    }
+    html += `<div class="mood-advice">💡 小建议：${advice}</div>`;
+    area.innerHTML = html;
+}
+
+function renderStats(){ 
+    document.getElementById('s-total').innerText=entries.length; 
+    let totalChars=entries.reduce((s,e)=>s+(e.content?e.content.length:0),0); 
+    document.getElementById('s-chars').innerText=totalChars; 
+    let mediaCount=entries.reduce((s,e)=>s+(e.media?e.media.length:0),0); 
+    document.getElementById('s-photo').innerText=mediaCount; 
+    let now=new Date(); 
+    let mc=entries.filter(e=>{ let d=new Date(e.date); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); }).length; 
+    document.getElementById('s-month').innerText=mc; 
+    renderYearCal(); 
+    renderMoodStats(); 
+}
+
+function renderYearCal() { 
+    let y = new Date().getFullYear();
+    let grid = document.getElementById('year-cal-grid');
+    let html = ''; 
+    for (let m = 0; m < 12; m++) { 
+        let fd = new Date(y, m, 1).getDay();
+        let dim = new Date(y, m + 1, 0).getDate(); 
+        html += `<div class="mini-month"><div class="mm-title">${m + 1}月</div><div class="mm-grid">`; 
+        for (let w = 0; w < 7; w++) {
+            html += `<div style="font-size:6px;color:var(--txt-l);text-align:center">${['日','一','二','三','四','五','六'][w]}</div>`; 
+        }
+        for (let i = 0; i < fd; i++) {
+            html += `<div></div>`; 
+        }
+        for (let d = 1; d <= dim; d++) { 
+            let ds = `${y}-${pad(m + 1)}-${pad(d)}`;
+            let entry = findEntry(ds);
+            let has = !!entry;
+            let icon = '';
+            if (has && entry.mood && moodIcons[entry.mood]) {
+                icon = moodIcons[entry.mood];
+            }
+            html += `<div class="mm-day ${has ? 'has-entry' : ''}" onclick="openEdFor('${ds}',false)">${d}${has ? icon : ''}</div>`; 
+        } 
+        html += `</div></div>`; 
+    } 
+    grid.innerHTML = html; 
+}
+
+async function exportFullBackup() {
+    let loading = document.getElementById('loadingTip');
+    loading.style.display = 'block';
+    loading.textContent = '⏳ 正在导出数据...';
+    try {
+        let allMedia = await getAllMedia();
+        let zip = new JSZip();
+        let mediaData = {};
+        for (let m of allMedia) {
+            if (m.data) {
+                mediaData[m.id] = {
+                    data: m.data,
+                    type: m.type || 'image/jpeg'
+                };
+            }
+        }
+        let dataJson = JSON.stringify({ 
+            entries, 
+            countdowns, 
+            mediaData: mediaData,
+            version: '3.0', 
+            time: new Date().toISOString() 
+        });
+        zip.file('backup.json', dataJson);
+        loading.textContent = '⏳ 正在生成ZIP文件...';
+        let content = await zip.generateAsync({ 
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 }
+        });
+        let url = URL.createObjectURL(content);
+        let a = document.createElement('a');
+        a.href = url;
+        let now = new Date();
+        a.download = `LJG_备份_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        alert(`导出成功！\n共 ${entries.length} 条日记，${Object.keys(mediaData).length} 个媒体文件`);
+    } catch(e) { 
+        console.error('导出失败:', e);
+        alert('导出失败：' + e.message); 
+    } finally { 
+        loading.style.display = 'none'; 
+    }
+}
+
+function openImportFile() { document.getElementById('import-file').click(); }
+
+async function importZipFile(input) {
+    let file = input.files[0];
+    if (!file) return;
+    let loading = document.getElementById('loadingTip');
+    loading.style.display = 'block';
+    loading.textContent = '⏳ 正在解析备份文件...';
+    try {
+        let zip = await JSZip.loadAsync(file);
+        let dataFile = zip.file('backup.json') || zip.file('diary_data.json');
+        if (!dataFile) throw new Error('备份文件格式错误，找不到数据文件');
+        let dataContent = await dataFile.async('string');
+        let backup = JSON.parse(dataContent);
+        if (backup.entries) entries = backup.entries;
+        if (backup.countdowns) countdowns = backup.countdowns;
+        let mediaData = backup.mediaData || {};
+        if (Object.keys(mediaData).length > 0) {
+            await clearAllMedia();
+            const dbRef = await openDB();
+            const tx = dbRef.transaction([STORE_NAME], 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            let count = 0;
+            for (let [id, info] of Object.entries(mediaData)) {
+                if (info.data) {
+                    store.put({
+                        id: id,
+                        data: info.data,
+                        type: info.type || 'image/jpeg',
+                        timestamp: Date.now()
+                    });
+                    count++;
+                }
+            }
+            await new Promise((resolve, reject) => {
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+            console.log(`恢复了 ${count} 个媒体文件`);
+        }
+        localStorage.setItem('ljg_entries', JSON.stringify(entries));
+        localStorage.setItem('ljg_cds', JSON.stringify(countdowns));
+        alert(`恢复成功！\n共恢复 ${entries.length} 条日记，${countdowns.length} 个纪念日`);
+        renderCal(); renderCds(); renderStats();
+        if(aggEnabled) renderAggregate();
+    } catch(e) { 
+        console.error('恢复失败:', e);
+        alert('恢复失败：' + e.message); 
+    } finally { 
+        loading.style.display = 'none'; 
+        input.value = ''; 
+    }
+}
+
+function clearAll(){ 
+    if(confirm('清空全部数据？不可恢复')){ 
+        entries=[]; 
+        countdowns=[]; 
+        localStorage.clear(); 
+        indexedDB.deleteDatabase(DB_NAME); 
+        db=null; 
+        openDB(); 
+        renderCal(); 
+        renderCds(); 
+        renderStats(); 
+        alert('已清空'); 
+    } 
+}
+
+function searchDiary(){ 
+    let q=document.getElementById('search-input').value.trim().toLowerCase(); 
+    let box=document.getElementById('search-results'); 
+    if(!q){ 
+        box.classList.remove('show'); 
+        return; 
+    } 
+    let res=entries.filter(e=>(e.content||'').toLowerCase().includes(q)||e.date.includes(q)); 
+    if(res.length===0){ 
+        box.innerHTML='<div class="search-empty" style="padding:10px;text-align:center;">未找到相关日记</div>'; 
+    } else { 
+        box.innerHTML=res.map(r=>`<div class="search-item" onclick="openEdFor('${r.date}',false);document.getElementById('search-results').classList.remove('show');"><span class="si-date">${r.date}</span><div class="si-text">${(r.content||'').substring(0,40)}</div></div>`).join(''); 
+    } 
+    box.classList.add('show'); 
+}
+
+document.addEventListener('click', function(e) {
+    let searchBox = document.getElementById('search-results');
+    let searchInput = document.getElementById('search-input');
+    if (searchBox && searchInput && !searchInput.contains(e.target) && !searchBox.contains(e.target)) {
+        searchBox.classList.remove('show');
+    }
+});
+
+document.getElementById('media-input').addEventListener('change',handleMedia);
+
+// 初始化
+init();
+</script>
+</body>
+</html>

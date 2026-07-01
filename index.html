@@ -2,377 +2,401 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="邯郸物价查询 - 实时超市价格信息">
-    <meta name="keywords" content="邯郸,物价,超市,价格查询">
-    <title>邯郸物价查询</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LJG · 我的工具集</title>
+    <!-- Font Awesome 6 (免费图标库) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
             min-height: 100vh;
-        }
-        .header {
-            text-align: center;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 30px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        .header p {
-            font-size: 16px;
-            opacity: 0.9;
-        }
-        .section {
-            background-color: white;
-            padding: 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .section h2 {
-            font-size: 22px;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #4CAF50;
-        }
-        .category-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 12px;
-        }
-        .category-item {
-            background-color: #E8F5E9;
-            padding: 18px 12px;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            border: 2px solid #4CAF50;
-            transition: all 0.3s ease;
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .category-item:hover {
-            background-color: #4CAF50;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-        }
-        .category-item.selected {
-            background-color: #4CAF50;
-            color: white;
-            box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
-        }
-        .button {
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            color: white;
-            padding: 16px 40px;
-            border: none;
-            border-radius: 30px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            margin: 15px 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
-        }
-        .button:active {
-            transform: translateY(0);
-        }
-        .product-list {
-            margin-top: 20px;
-        }
-        .product-item {
-            background-color: white;
-            padding: 18px;
-            margin-bottom: 12px;
-            border-radius: 10px;
+            /* 森林护眼主色调：柔和的绿色渐变 + 自然光影 */
+            background: radial-gradient(circle at 30% 20%, #2d4a2d, #1a2e1a);
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            border-left: 5px solid #4CAF50;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        .product-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .product-name {
-            font-size: 18px;
-            color: #333;
-            font-weight: 500;
-            flex: 1;
-        }
-        .price {
-            color: #E53935;
-            font-weight: bold;
-            font-size: 22px;
-            margin-left: 15px;
-        }
-        .unit {
-            color: #999;
-            font-size: 14px;
-            margin-left: 5px;
-        }
-        .update-section {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        .update-time {
-            color: #666;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        .loading {
-            color: #4CAF50;
-            font-size: 14px;
-            margin-top: 10px;
-            animation: pulse 1.5s ease-in-out infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             padding: 20px;
-            color: #666;
-            font-size: 14px;
+            position: relative;
+            overflow-x: hidden;
         }
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
+
+        /* 森林光斑 + 柔和光晕 (护眼柔光) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle at 60% 30%, rgba(180, 220, 150, 0.06), transparent 45%),
+                        radial-gradient(circle at 20% 80%, rgba(160, 200, 130, 0.05), transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(200, 230, 170, 0.04), transparent 40%);
+            animation: forestGlow 14s infinite alternate ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes forestGlow {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 0.5; }
+            100% { transform: translate(2%, -1%) scale(1.15) rotate(3deg); opacity: 1; }
+        }
+
+        /* 主卡片 — 木质/自然质感 + 柔光 */
+        .forest-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(30, 50, 30, 0.78);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(160, 200, 130, 0.25);
+            box-shadow: 0 0 60px rgba(100, 180, 80, 0.12), 0 0 120px rgba(60, 140, 50, 0.06), inset 0 0 40px rgba(160, 200, 130, 0.04);
+            border-radius: 40px 40px 32px 32px;
+            padding: 3.5rem 4rem;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: cardEntry 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        @keyframes cardEntry {
+            0% { opacity: 0; transform: scale(0.94) translateY(16px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* 标题：森林绿 + 护眼暖黄 */
+        h1 {
+            font-size: 3.8rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #b8d9a8, #8fbc7a, #6a9e5a, #b8d9a8);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: forestTitle 6s ease-in-out infinite alternate;
+            text-shadow: 0 0 40px rgba(120, 200, 80, 0.08);
+            margin-bottom: 0.2rem;
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', sans-serif;
+        }
+
+        @keyframes forestTitle {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 副标题 — 自然清新 */
+        .subhead {
+            font-size: 0.95rem;
+            color: #a0c890;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-top: -6px;
+            margin-bottom: 2rem;
+            font-weight: 400;
+            border-bottom: 1px solid rgba(160, 200, 130, 0.15);
+            padding-bottom: 12px;
+            display: inline-block;
+            text-shadow: 0 0 20px rgba(120, 200, 80, 0.06);
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+        }
+
+        .subhead i {
+            color: #8fbc7a;
+            filter: drop-shadow(0 0 8px #6a9e5a44);
+        }
+
+        /* 工具列表 — 森林「树桩/叶片」风格 */
+        .tool-list {
+            list-style: none;
+            padding: 0;
+            margin: 2.2rem 0 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        .tool-list li {
+            background: rgba(25, 45, 25, 0.7);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(160, 200, 130, 0.2);
+            border-radius: 60px;
+            padding: 0.95rem 1.8rem;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(120, 200, 80, 0.02);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 发光边框 & 悬停效果 — 柔和叶片光晕 */
+        .tool-list li:hover {
+            transform: translateY(-4px) scale(1.01);
+            border-color: #b8d9a8;
+            box-shadow: 0 0 40px rgba(160, 220, 130, 0.25), 0 0 80px rgba(100, 180, 80, 0.10), inset 0 0 30px rgba(160, 200, 130, 0.06);
+            background: rgba(35, 60, 35, 0.85);
+        }
+
+        /* 每个列表项前的自然小图标 (叶片/树木/流水) */
+        .tool-list li::before {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            color: #8fbc7a;
+            margin-right: 18px;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            transition: 0.3s;
+            text-shadow: 0 0 12px #6a9e5a33;
+        }
+
+        .tool-list li:nth-child(1)::before { content: '\f06c'; }  /* 树叶 — 拾光录 */
+        .tool-list li:nth-child(2)::before { content: '\f0d1'; }  /* 火箭 (代表清风/速递) — 快递 */
+        .tool-list li:nth-child(3)::before { content: '\f0f7'; }  /* 瓶 (代表露水/会议) 改用 树木: \f1bb */
+        .tool-list li:nth-child(3)::before { content: '\f1bb'; }  /* 树木 — 会议 */
+
+        .tool-list li:hover::before {
+            color: #b8d9a8;
+            transform: scale(1.15) rotate(6deg);
+            text-shadow: 0 0 30px #8fbc7a;
+        }
+
+        /* 链接样式 — 柔和护眼字体 */
+        .tool-list li a {
+            font-size: 1.6rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: #c8dcc0;
+            letter-spacing: 1px;
+            text-shadow: 0 0 12px rgba(120, 200, 80, 0.04);
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            justify-content: center;
+            font-family: 'Segoe UI', 'Roboto', 'PingFang SC', sans-serif;
+        }
+
+        /* 链接悬停 — 暖黄柔光 */
+        .tool-list li:hover a {
+            color: #e0f0d0;
+            text-shadow: 0 0 30px #b8d9a844, 0 0 60px #8fbc7a22;
+        }
+
+        /* 每个链接添加森林小彩蛋 */
+        .tool-list li a::after {
+            content: '';
+            font-size: 0.75rem;
+            margin-left: 12px;
+            opacity: 0.4;
+            font-weight: 300;
+            color: #8fbc7a;
+            transition: 0.25s;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .tool-list li:nth-child(1) a::after { content: '· 林间光'; }
+        .tool-list li:nth-child(2) a::after { content: '· 山风'; }
+        .tool-list li:nth-child(3) a::after { content: '· 树语'; }
+
+        .tool-list li:hover a::after {
+            opacity: 0.8;
+            color: #b8d9a8;
+            text-shadow: 0 0 16px #8fbc7a66;
+        }
+
+        /* 底部 — 森林护眼标语 */
+        .forest-footer {
+            margin-top: 2.8rem;
+            color: rgba(160, 200, 130, 0.4);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(160, 200, 130, 0.1);
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .forest-footer i {
+            color: #8fbc7a;
+            font-size: 1.4rem;
+            filter: drop-shadow(0 0 12px #6a9e5a44);
+        }
+
+        .forest-footer span {
+            background: linear-gradient(135deg, #b8d9a8, #8fbc7a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .forest-footer .quote {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            color: #a0c890;
+            letter-spacing: 2px;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 650px) {
+            .forest-card {
+                padding: 2.2rem 1.5rem;
+                border-radius: 32px;
             }
-            .header h1 {
-                font-size: 26px;
+
+            h1 {
+                font-size: 2.8rem;
+                letter-spacing: 2px;
             }
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
+
+            .tool-list li a {
+                font-size: 1.3rem;
+                flex-wrap: wrap;
             }
-            .product-item {
-                padding: 15px;
+
+            .tool-list li a::after {
+                content: '' !important;
+                display: none;
             }
-            .price {
-                font-size: 18px;
+
+            .tool-list li::before {
+                margin-right: 10px;
+                font-size: 1.3rem;
             }
+
+            .subhead {
+                font-size: 0.7rem;
+                letter-spacing: 4px;
+            }
+
+            .forest-footer {
+                font-size: 0.65rem;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .tool-list li {
+                padding: 0.7rem 1rem;
+                border-radius: 50px;
+            }
+
+            .tool-list li a {
+                font-size: 1.0rem;
+            }
+
+            .forest-footer i {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* 额外装饰：自然元素 (叶片/松果) */
+        .forest-card::before {
+            content: '🌿';
+            position: absolute;
+            top: 18px;
+            left: 24px;
+            font-size: 2.2rem;
+            opacity: 0.10;
+            transform: rotate(-10deg);
+            filter: drop-shadow(0 0 12px #6a9e5a33);
+        }
+
+        .forest-card::after {
+            content: '🍃';
+            position: absolute;
+            bottom: 18px;
+            right: 24px;
+            font-size: 2.2rem;
+            opacity: 0.10;
+            transform: rotate(10deg);
+            filter: drop-shadow(0 0 12px #6a9e5a33);
+        }
+
+        /* 内层自然光晕 */
+        .forest-card .nature-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(160, 200, 130, 0.03), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            border: 1px dashed rgba(160, 200, 130, 0.05);
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🏪 邯郸物价查询</h1>
-        <p>实时超市价格信息 · 随时随地查看</p>
-    </div>
+    <div class="forest-card">
+        <!-- 自然光晕装饰 -->
+        <div class="nature-orb"></div>
 
-    <div class="section">
-        <h2>📦 选择分类</h2>
-        <div class="category-grid" id="categoryGrid"></div>
-    </div>
-
-    <div class="section" id="actionSection" style="display: none;">
-        <h2 id="categoryTitle">商品列表</h2>
-        <div style="text-align: center;">
-            <button class="button" onclick="generateProducts()">✨ 生成商品</button>
+        <!-- 主标题 森林护眼风格 -->
+        <h1>🌳 我的百宝箱</h1>
+        <div class="subhead">
+            <i class="fas fa-circle" style="margin-right: 8px; color: #8fbc7a; font-size: 0.6rem;"></i> 
+            弄类不赖
+            <i class="fas fa-circle" style="margin-left: 8px; color: #8fbc7a; font-size: 0.6rem;"></i>
         </div>
-        <div class="product-list" id="productList"></div>
-        
-        <div class="update-section">
-            <button class="button" onclick="updatePrices()" style="background: linear-gradient(135deg, #2196F3, #1976D2);">🔄 更新价格</button>
-            <div class="update-time" id="updateTime">更新时间: 暂未更新</div>
-            <div class="loading" id="loading" style="display: none;">正在更新价格...</div>
+
+        <!-- 工具列表 — 自然护眼风格 -->
+        <ul class="tool-list">
+            <li>
+                <a href="拾光录.html">
+                    <i class="fas fa-leaf" style="color: #8fbc7a; font-size: 1.4rem; filter: drop-shadow(0 0 8px #6a9e5a44);"></i>
+                    拾光录
+                </a>
+            </li>
+            <li>
+                <a href="快递报价查询.html">
+                    <i class="fas fa-wind" style="color: #8fbc7a; font-size: 1.4rem; filter: drop-shadow(0 0 8px #6a9e5a44);"></i>
+                    快递报价查询
+                </a>
+            </li>
+            <li>
+                <a href="会议发起人.html">
+                    <i class="fas fa-tree" style="color: #8fbc7a; font-size: 1.4rem; filter: drop-shadow(0 0 8px #6a9e5a44);"></i>
+                    会议发起人
+                </a>
+            </li>
+        </ul>
+
+        <!-- 森林护眼底部 — 自然语录 -->
+        <div class="forest-footer">
+            <i class="fas fa-seedling"></i>
+            <span> 纯装饰 </span>
+            <i class="fas fa-feather" style="color: #8fbc7a;"></i>
+            <span class="quote">
+                <i class="fas fa-circle" style="color: #8fbc7a; font-size: 0.4rem;"></i> 
+                不知该写点啥 
+                <i class="fas fa-circle" style="color: #8fbc7a; font-size: 0.4rem;"></i>
+            </span>
         </div>
     </div>
-
-    <div class="footer">
-        <p>💡 数据仅供参考，实际价格以超市为准</p>
-        <p>© 2024 邯郸物价查询</p>
-    </div>
-
-    <script>
-        var categories = [
-            { id: 'daily_necessities', name: '生活用品', icon: '🧹' },
-            { id: 'fresh_food', name: '生鲜食品', icon: '🥩' },
-            { id: 'vegetables_fruits', name: '蔬菜水果', icon: '🥬' },
-            { id: 'meat', name: '肉类', icon: '🍖' },
-            { id: 'dairy', name: '乳制品', icon: '🥛' },
-            { id: 'grains', name: '粮油米面', icon: '🍚' },
-            { id: 'snacks', name: '休闲零食', icon: '🍿' },
-            { id: 'beverages', name: '饮料酒水', icon: '🥤' },
-            { id: 'seasonings', name: '调味品', icon: '🧂' },
-            { id: 'personal_care', name: '个人护理', icon: '🧴' },
-            { id: 'household', name: '家居用品', icon: '🏠' },
-            { id: 'frozen_food', name: '冷冻食品', icon: '🧊' }
-        ];
-
-        var products = {
-            daily_necessities: ['卷纸', '抽纸', '洗衣液', '洗洁精', '垃圾袋', '洗手液', '牙膏', '毛巾', '脸盆', '拖鞋'],
-            fresh_food: ['鲜鸡蛋', '豆腐', '豆芽', '活鱼', '虾', '鱿鱼', '海带', '紫菜', '腐竹', '木耳'],
-            vegetables_fruits: ['油麦菜', '菠菜', '豆角', '西红柿', '黄瓜', '茄子', '青椒', '胡萝卜', '土豆', '西兰花'],
-            meat: ['猪肉', '牛肉', '羊肉', '鸡肉', '鸭肉', '排骨', '五花肉', '猪肝', '鸡翅', '猪蹄'],
-            dairy: ['纯牛奶', '酸奶', '奶酪', '黄油', '奶油', '奶粉', '炼乳', '豆浆', '豆奶', '乳酸菌饮料'],
-            grains: ['大米', '小米', '面粉', '玉米面', '食用油', '香油', '挂面', '方便面', '燕麦片', '八宝粥'],
-            snacks: ['薯片', '饼干', '瓜子', '花生', '糖果', '巧克力', '果冻', '爆米花', '坚果', '海苔'],
-            beverages: ['矿泉水', '可乐', '雪碧', '橙汁', '苹果汁', '绿茶', '红茶', '咖啡', '啤酒', '功能饮料'],
-            seasonings: ['酱油', '醋', '盐', '糖', '味精', '鸡精', '胡椒粉', '花椒', '八角', '料酒'],
-            personal_care: ['洗发水', '护发素', '沐浴露', '洗面奶', '爽肤水', '面霜', '防晒霜', '口红', '面膜', '化妆棉'],
-            household: ['洗洁精', '洗衣粉', '消毒液', '空气清新剂', '蚊香', '杀虫剂', '拖把', '扫帚', '抹布', '水桶'],
-            frozen_food: ['速冻水饺', '速冻汤圆', '速冻包子', '速冻馒头', '速冻鸡翅', '速冻排骨', '速冻鱼块', '速冻虾仁', '速冻蔬菜', '速冻披萨']
-        };
-
-        var prices = {
-            daily_necessities: [15.90, 8.90, 25.90, 12.90, 5.90, 9.90, 12.90, 18.90, 15.90, 19.90],
-            fresh_food: [5.80, 2.50, 3.50, 12.00, 35.00, 28.00, 8.00, 15.00, 12.00, 25.00],
-            vegetables_fruits: [3.50, 4.00, 5.50, 4.50, 3.80, 3.20, 4.80, 2.50, 2.80, 6.50],
-            meat: [15.50, 38.00, 42.00, 12.00, 18.00, 22.00, 16.00, 18.00, 15.00, 20.00],
-            dairy: [3.50, 4.50, 12.00, 18.00, 15.00, 68.00, 22.00, 3.00, 3.50, 5.00],
-            grains: [3.20, 5.50, 2.80, 3.50, 65.00, 25.00, 8.00, 3.50, 18.00, 5.50],
-            snacks: [8.50, 6.00, 12.00, 15.00, 8.00, 15.00, 5.00, 7.00, 25.00, 10.00],
-            beverages: [2.00, 3.50, 3.50, 4.50, 4.50, 3.00, 3.00, 5.00, 4.00, 6.00],
-            seasonings: [12.00, 8.00, 2.50, 4.00, 8.00, 15.00, 12.00, 18.00, 25.00, 10.00],
-            personal_care: [35.00, 28.00, 32.00, 45.00, 88.00, 128.00, 98.00, 168.00, 68.00, 15.00],
-            household: [12.00, 8.00, 15.00, 18.00, 12.00, 18.00, 25.00, 15.00, 8.00, 18.00],
-            frozen_food: [18.00, 15.00, 12.00, 8.00, 22.00, 28.00, 18.00, 35.00, 12.00, 25.00]
-        };
-
-        var units = {
-            daily_necessities: '提',
-            fresh_food: '斤',
-            vegetables_fruits: '斤',
-            meat: '斤',
-            dairy: '盒',
-            grains: '斤',
-            snacks: '包',
-            beverages: '瓶',
-            seasonings: '瓶',
-            personal_care: '瓶',
-            household: '个',
-            frozen_food: '袋'
-        };
-
-        var selectedCategory = null;
-        var currentProducts = [];
-
-        function init() {
-            var grid = document.getElementById('categoryGrid');
-            for (var i = 0; i < categories.length; i++) {
-                var cat = categories[i];
-                var div = document.createElement('div');
-                div.className = 'category-item';
-                div.textContent = cat.icon + ' ' + cat.name;
-                div.onclick = createClickHandler(cat, div);
-                grid.appendChild(div);
-            }
-            load();
-        }
-
-        function createClickHandler(category, element) {
-            return function() {
-                selectCategory(category, element);
-            };
-        }
-
-        function selectCategory(category, element) {
-            selectedCategory = category.id;
-            var items = document.querySelectorAll('.category-item');
-            for (var i = 0; i < items.length; i++) {
-                items[i].classList.remove('selected');
-            }
-            element.classList.add('selected');
-            document.getElementById('actionSection').style.display = 'block';
-            document.getElementById('productList').innerHTML = '';
-            document.getElementById('categoryTitle').textContent = category.icon + ' ' + category.name + ' - 商品列表';
-        }
-
-        function generateProducts() {
-            if (!selectedCategory) {
-                return;
-            }
-            currentProducts = products[selectedCategory];
-            var categoryPrices = prices[selectedCategory];
-            var unit = units[selectedCategory];
-            var html = '';
-            for (var i = 0; i < currentProducts.length; i++) {
-                html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + categoryPrices[i].toFixed(2) + '</span><span class="unit">/' + unit + '</span></span></div>';
-            }
-            document.getElementById('productList').innerHTML = html;
-        }
-
-        function updatePrices() {
-            if (!selectedCategory || currentProducts.length === 0) {
-                return;
-            }
-            var loading = document.getElementById('loading');
-            loading.style.display = 'block';
-            setTimeout(function() {
-                var categoryPrices = prices[selectedCategory];
-                var updatedPrices = [];
-                for (var i = 0; i < categoryPrices.length; i++) {
-                    var price = categoryPrices[i];
-                    var fluctuation = (Math.random() - 0.5) * 0.2;
-                    updatedPrices.push(Math.max(0, price * (1 + fluctuation)));
-                }
-                var html = '';
-                for (var i = 0; i < currentProducts.length; i++) {
-                    html += '<div class="product-item"><span class="product-name">' + currentProducts[i] + '</span><span><span class="price">¥' + updatedPrices[i].toFixed(2) + '</span><span class="unit">/' + units[selectedCategory] + '</span></span></div>';
-                }
-                document.getElementById('productList').innerHTML = html;
-                var now = new Date();
-                var year = now.getFullYear();
-                var month = padStart(now.getMonth() + 1, '0', 2);
-                var day = padStart(now.getDate(), '0', 2);
-                var hour = padStart(now.getHours(), '0', 2);
-                var minute = padStart(now.getMinutes(), '0', 2);
-                var second = padStart(now.getSeconds(), '0', 2);
-                var timeStr = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-                document.getElementById('updateTime').textContent = '更新时间: ' + timeStr;
-                saveUpdateTime(timeStr);
-                loading.style.display = 'none';
-            }, 1000);
-        }
-
-        function padStart(str, pad, length) {
-            str = str.toString();
-            while (str.length < length) {
-                str = pad + str;
-            }
-            return str;
-        }
-
-        function saveUpdateTime(time) {
-            localStorage.setItem('lastUpdateTime', time);
-        }
-
-        function load() {
-            var time = localStorage.getItem('lastUpdateTime');
-            if (time) {
-                document.getElementById('updateTime').textContent = '更新时间: ' + time;
-            }
-        }
-
-        window.onload = init;
-    </script>
 </body>
 </html>
