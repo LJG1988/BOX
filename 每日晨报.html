@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>晨报 · LJG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #0a0f1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            padding: 20px 12px 40px;
+            background-image: 
+                radial-gradient(circle at 15% 20%, rgba(0,180,255,0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 70%, rgba(120,0,255,0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #0b111e 0%, #060a12 100%);
+            color: #e0e6f0;
+        }
+        .action-bar {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 24px;
+            margin-bottom: 6px;
+            order: 2;
+        }
+        .btn {
+            background-color: rgba(20,30,50,0.8);
+            border: 1px solid #2a3f60;
+            color: #a8c8ff;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0,160,255,0.2);
+            backdrop-filter: blur(5px);
+            transition: all 0.25s;
+            font-family: inherit;
+        }
+        .btn:hover { border-color: #4a80c0; box-shadow: 0 0 22px rgba(0,180,255,0.4); color: #d0e6ff; }
+        .btn:active { transform: scale(0.97); }
+        .newspaper {
+            max-width: 560px;
+            width: 100%;
+            background-color: rgba(10,18,32,0.85);
+            background-image: linear-gradient(145deg, #0d1626 0%, #0f1c2e 30%, #0a1422 65%, #111e30 100%);
+            box-shadow: 0 0 0 1px rgba(0,180,255,0.2), 0 0 40px rgba(0,120,255,0.15), 0 25px 50px rgba(0,0,0,0.6);
+            border-radius: 16px;
+            padding: 28px 22px 30px;
+            border: 1px solid rgba(70,130,200,0.5);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        .masthead {
+            text-align: center;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #1e3a5f;
+            padding-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        .greeting { font-size: 1.9rem; font-weight: 700; color: #eaf2ff; text-shadow: 0 0 18px rgba(0,200,255,0.7); margin-bottom: 6px; }
+        .date-line {
+            font-size: 1.1rem; color: #b0c8e8;
+            display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px;
+            font-weight: 500; border-top: 1px solid #1e3a5f; padding-top: 12px; margin-top: 8px;
+        }
+        .date-line span {
+            background: rgba(0,160,255,0.1); padding: 4px 14px; border-radius: 30px;
+            border: 1px solid #2a5070; font-size: 0.95rem; color: #d0e4ff;
+        }
+        .lunar-tag { background-color: rgba(0,200,255,0.2) !important; color: #c0e6ff !important; border-color: #4a90d0 !important; font-weight: 600; }
+        .section { margin-top: 28px; margin-bottom: 12px; }
+        .section-header {
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: 1.6rem; font-weight: 700; color: #d0e8ff; border-bottom: 2px solid #1e4a7a;
+            padding-bottom: 8px; margin-bottom: 16px; letter-spacing: 2px; text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0,180,255,0.5);
+        }
+        .edition-mark {
+            font-size: 0.85rem; background: #1a3050; color: #a8d4ff; padding: 3px 14px;
+            border-radius: 30px; border: 1px solid #2a5070; font-weight: 500;
+        }
+        .news-list { list-style: none; }
+        .news-item { padding: 14px 0; border-bottom: 1px solid #1a2e4a; }
+        .news-title { font-weight: 500; font-size: 1.0rem; color: #d5e6ff; line-height: 1.6; }
+        .hot-item { display: flex; align-items: baseline; padding: 12px 0; border-bottom: 1px solid #1a2e4a; }
+        .hot-rank { font-weight: 700; font-size: 1.15rem; color: #4aa8ff; min-width: 32px; margin-right: 10px; text-shadow: 0 0 8px rgba(0,180,255,0.8); }
+        .hot-content { flex: 1; }
+        .hot-title { font-weight: 600; font-size: 1.1rem; color: #e0ecff; }
+        .hot-summary { font-size: 0.9rem; color: #9ab8d8; margin-top: 4px; }
+        .sentence-box {
+            margin-top: 32px; padding: 22px 16px; background: rgba(0,160,255,0.05);
+            border-top: 1px solid #1e4a7a; border-bottom: 1px solid #1e4a7a; text-align: center;
+            font-size: 1.3rem; color: #c0dcff; border-radius: 12px; position: relative;
+        }
+        .sentence-text { font-style: italic; text-shadow: 0 0 12px rgba(0,200,255,0.6); }
+        .info-message { text-align: center; color: #8ab0d8; padding: 16px; background: rgba(0,100,200,0.1); border-radius: 30px; font-size: 0.95rem; border: 1px solid #1e3a5f; }
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #0a1a2e; color: #c0e6ff; padding: 12px 28px; border-radius: 40px;
+            font-size: 1rem; box-shadow: 0 0 25px rgba(0,200,255,0.6); z-index: 999;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none; border: 1px solid #2a6ea0;
+        }
+        .debug-info { font-size: 0.8rem; color: #6a90b8; text-align: center; margin-top: 18px; background: rgba(0,100,200,0.1); padding: 6px; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <div class="newspaper" id="newspaperContainer">
+        <div class="info-message" style="padding:30px;">📰 晨报加载中…</div>
+    </div>
+    <div class="action-bar">
+        <button class="btn" id="refreshBtn">🔄 刷新</button>
+        <button class="btn" id="copyBtn">📋 一键复制</button>
+    </div>
+    <div class="toast" id="toastMsg">已复制</div>
+
+    <script>
+    (function() {
+        // ★★★ 请替换成你自己的天聚数行API Key ★★★
+        const API_KEY = '0c5aeb0bd21beeaaa6b7bf8e2cd3696f';
+
+        const container = document.getElementById('newspaperContainer');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toastMsg');
+        let currentCopyText = '';
+
+        function showToast(text) {
+            toast.textContent = text;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 1500);
+        }
+
+        // 带重试机制的fetch
+        async function fetchDataWithRetry(url, retries = 3, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        console.warn(`HTTP错误 ${response.status}，重试 ${i + 1}/${retries}`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                    const data = await response.json();
+                    if (data && data.code === 200) {
+                        return data;
+                    } else {
+                        console.warn(`接口返回异常: ${JSON.stringify(data)}，重试 ${i + 1}/${retries}`);
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        continue;
+                    }
+                } catch (error) {
+                    console.warn(`请求失败: ${error.message}，重试 ${i + 1}/${retries}`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            return null;
+        }
+
+        // 解析农历数据 - 重点修复月份缺失问题
+        function parseLunarData(data) {
+            if (!data) return null;
+            let result = data.result || data.data || data;
+            if (Array.isArray(result)) result = result[0] || {};
+            
+            console.log('农历原始数据:', JSON.stringify(result).substring(0, 1000));
+            
+            let year = result.gregorianyear || result.gregorianYear || result.year || new Date().getFullYear();
+            let month = result.gregorianmonth || result.gregorianMonth || result.month || new Date().getMonth() + 1;
+            let day = result.gregorianday || result.gregorianDay || result.day || new Date().getDate();
+            
+            let weekday = result.weekday || result.week || '';
+            if (typeof weekday === 'number') {
+                const weekdays = ['日','一','二','三','四','五','六'];
+                weekday = weekdays[weekday] || '';
+            } else if (typeof weekday === 'string') {
+                weekday = weekday.replace('星期', '');
+            }
+            if (!weekday) {
+                const d = new Date(year, month-1, day);
+                const weekdays = ['日','一','二','三','四','五','六'];
+                weekday = weekdays[d.getDay()];
+            }
+
+            // 农历字段提取 - 尝试所有可能的字段名
+            let lunarYear = result.lunaryear || result.lunarYear || result.lunarYearCn || result.lunar_year || '';
+            let lunarMonth = result.lunarmonth || result.lunarMonth || result.lunarMonthCn || result.cnmonth || result.lunar_month || '';
+            let lunarDay = result.lunarday || result.lunarDay || result.lunarDayCn || result.cnday || result.lunar_day || '';
+            
+            // 如果月份还是空，尝试从lunarDate等组合字段提取
+            if (!lunarMonth) {
+                const fullText = result.lunarDate || result.lunar || result.lunardate || result.lunar_str || result['农历'] || result.nongli || result.lunarDateTime || '';
+                if (fullText && typeof fullText === 'string') {
+                    // 匹配"正月"、"二月"..."腊月"、"冬月"、"闰X月"
+                    const monthMatch = fullText.match(/(闰?[正二三四五六七八九十冬腊]月)/);
+                    if (monthMatch) {
+                        lunarMonth = monthMatch[0];
+                    }
+                    // 如果月份没匹配到但日匹配到了
+                    if (!lunarMonth) {
+                        const dayMatch = fullText.match(/(初[一二三四五六七八九十]|廿[一二三四五六七八九十]|三十|二十[一二三四五六七八九]|十[一二三四五六七八九]|[一二三四五六七八九]日)/);
+                        if (dayMatch) {
+                            lunarDay = dayMatch[0];
+                        }
+                    }
+                }
+            }
+            
+            // 遍历所有字段寻找包含"月"的字符串
+            if (!lunarMonth) {
+                const monthKeywords = ['正','二','三','四','五','六','七','八','九','十','冬','腊'];
+                for (const key in result) {
+                    const val = result[key];
+                    if (typeof val === 'string' && val.includes('月') && monthKeywords.some(k => val.includes(k))) {
+                        const m = val.match(/(闰?[正二三四五六七八九十冬腊]月)/);
+                        if (m) { lunarMonth = m[0]; break; }
+                    }
+                }
+            }
+            
+            // 如果月份还是找不到，但日存在，使用"腊月"作为默认（因为通常农历日期在腊月附近）
+            if (!lunarMonth && lunarDay) {
+                // 从公历日期推断农历月份（简化处理）
+                const now = new Date();
+                const lunarMonths = ['正月','二月','三月','四月','五月','六月','七月','八月','九月','十月','冬月','腊月'];
+                const lunarMonthIndex = now.getMonth(); // 粗略映射
+                lunarMonth = lunarMonths[lunarMonthIndex] || '腊月';
+            }
+
+            let lunarText = '';
+            if (lunarYear || lunarMonth || lunarDay) {
+                const parts = [];
+                if (lunarYear) parts.push(lunarYear);
+                if (lunarMonth) parts.push(lunarMonth);
+                if (lunarDay) parts.push(lunarDay);
+                lunarText = parts.join(' ');
+            }
+            
+            if (!lunarText) {
+                const possible = ['lunarDate','lunar','农历','lunardate','lunar_str','nongli'];
+                for (const f of possible) {
+                    if (result[f]) { lunarText = result[f]; break; }
+                }
+            }
+            
+            lunarText = lunarText.replace(/\s+/g, ' ').trim();
+            if (lunarText && !lunarText.startsWith('农历')) {
+                lunarText = '农历 ' + lunarText;
+            }
+            
+            // 确保包含"月"
+            if (lunarText && !lunarText.includes('月')) {
+                lunarText = `农历 ${lunarMonth || ''} ${lunarDay || lunarText.replace('农历','').trim()}`.trim();
+            }
+
+            const dateStr = `${year}年${month}月${day}日 星期${weekday}`;
+            console.log('解析结果:', dateStr, '|', lunarText);
+            return { dateStr, lunarStr: lunarText || '' };
+        }
+
+        function extractNewsList(data) {
+            if (!data) return [];
+            let list = [];
+            if (data.result && data.result.list) list = data.result.list;
+            else if (data.result && data.result.news) list = data.result.news;
+            else if (data.result && Array.isArray(data.result)) list = data.result;
+            else if (data.data && Array.isArray(data.data)) list = data.data;
+            else if (data.result && typeof data.result === 'object') {
+                for (const key in data.result) {
+                    if (Array.isArray(data.result[key])) { list = data.result[key]; break; }
+                }
+            } else if (Array.isArray(data)) list = data;
+            return list;
+        }
+
+        function generateSummary(item) {
+            let title = (item.title || '').replace(/<[^>]*>/g, '').trim();
+            let desc = (item.description || item.content || item.summary || item.desc || '').replace(/<[^>]*>/g, '').trim();
+            desc = desc.replace(/\s+/g, ' ').trim();
+            if (!desc || desc.length < 10) return '';
+            const sentences = desc.split(/(?<=[。！？!?])/).map(s => s.trim()).filter(s => s.length > 5);
+            if (sentences.length >= 2) return sentences.slice(0, 3).join(' ');
+            if (sentences.length === 1) {
+                if (sentences[0].length < 30 && desc.length > 60) return desc.substring(0, 150) + '…';
+                return sentences[0];
+            }
+            return desc.length > 100 ? desc.substring(0, 150) + '…' : desc;
+        }
+
+        function processNewsList(newsArray, maxItems = 10) {
+            if (!newsArray || !Array.isArray(newsArray) || newsArray.length === 0) return [];
+            const seen = new Set();
+            const result = [];
+            for (let item of newsArray) {
+                if (!item || typeof item !== 'object') continue;
+                const title = (item.title || '').replace(/<[^>]*>/g, '').trim();
+                if (!title || seen.has(title)) continue;
+                seen.add(title);
+                result.push({ title, summary: generateSummary(item) });
+                if (result.length >= maxItems) break;
+            }
+            return result;
+        }
+
+        function renderNewspaper(lunarInfo, domesticNews, worldNews, tipsContent, sentenceContent) {
+            const dateDisplay = lunarInfo ? lunarInfo.dateStr : '日期加载失败';
+            const lunarDisplay = lunarInfo && lunarInfo.lunarStr ? `<span class="lunar-tag">${lunarInfo.lunarStr}</span>` : '';
+
+            const domesticSection = domesticNews.length > 0 ? `
+                <div class="section">
+                    <div class="section-header">国内新闻<span class="edition-mark">要闻10条</span></div>
+                    <ul class="news-list">${domesticNews.map((item, idx) => `<li class="news-item"><div class="news-title">${idx+1}. ${item.title}　${item.summary||''}</div></li>`).join('')}</ul>
+                </div>` : `<div class="section info-message">暂无国内新闻数据</div>`;
+
+            const worldSection = worldNews.length > 0 ? `
+                <div class="section">
+                    <div class="section-header">国际新闻<span class="edition-mark">环球10条</span></div>
+                    <ul class="news-list">${worldNews.map((item, idx) => `<li class="news-item"><div class="news-title">${idx+1}. ${item.title}　${item.summary||''}</div></li>`).join('')}</ul>
+                </div>` : `<div class="section info-message">国际新闻暂无数据</div>`;
+
+            const tipsSection = tipsContent ? `
+                <div class="section">
+                    <div class="section-header">生活小窍门<span class="edition-mark">实用</span></div>
+                    <div class="news-item"><div class="news-title">${tipsContent}</div></div>
+                </div>` : `<div class="section info-message">生活小窍门暂无数据（可点击刷新重试）</div>`;
+
+            const sentenceBlock = sentenceContent ? `
+                <div class="sentence-box"><span class="sentence-text">${sentenceContent}</span></div>` : `<div class="sentence-box info-message">今日美句加载失败（可点击刷新重试）</div>`;
+
+            container.innerHTML = `
+                <div class="masthead">
+                    <div class="greeting">早上好！</div>
+                    <div class="date-line"><span>${dateDisplay}</span>${lunarDisplay}</div>
+                </div>
+                ${domesticSection}
+                ${worldSection}
+                ${tipsSection}
+                ${sentenceBlock}
+                <div class="debug-info">数据更新时间: ${new Date().toLocaleTimeString()} | 广岩若凡</div>`;
+
+            // 生成复制文本 - 修复复制功能
+            let copyText = `早上好！${dateDisplay}`;
+            if (lunarInfo && lunarInfo.lunarStr) copyText += `\n${lunarInfo.lunarStr}`;
+            copyText += `\n\n【国内新闻】`;
+            domesticNews.forEach((item, i) => copyText += `\n${i+1}. ${item.title}　${item.summary||''}`);
+            copyText += `\n\n【国际新闻】`;
+            worldNews.forEach((item, i) => copyText += `\n${i+1}. ${item.title}　${item.summary||''}`);
+            if (tipsContent) copyText += `\n\n【生活小窍门】\n${tipsContent}`;
+            if (sentenceContent) copyText += `\n\n【每日一句】\n${sentenceContent}`;
+            currentCopyText = copyText;
+        }
+
+        async function loadData() {
+            container.innerHTML = `<div class="info-message" style="padding:30px;">📰 晨报加载中…</div>`;
+            try {
+                const lunarData = await fetchDataWithRetry(`https://apis.tianapi.com/lunar/index?key=${API_KEY}`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const guoneiData = await fetchDataWithRetry(`https://apis.tianapi.com/guonei/index?key=${API_KEY}&num=20`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const worldData = await fetchDataWithRetry(`https://apis.tianapi.com/world/index?key=${API_KEY}&num=20`);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const tipsData = await fetchDataWithRetry(`https://apis.tianapi.com/qiaomen/index?key=${API_KEY}`, 5, 2000);
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                const sentenceData = await fetchDataWithRetry(`https://apis.tianapi.com/sentence/index?key=${API_KEY}`, 5, 2000);
+
+                const lunarInfo = parseLunarData(lunarData);
+                const domesticRaw = extractNewsList(guoneiData);
+                const worldRaw = extractNewsList(worldData);
+                const domesticNews = processNewsList(domesticRaw, 10);
+                const worldNews = processNewsList(worldRaw, 10);
+
+                let tipsContent = '';
+                if (tipsData && tipsData.result) {
+                    tipsContent = tipsData.result.content || '';
+                }
+
+                let sentenceContent = '';
+                if (sentenceData && sentenceData.result) {
+                    sentenceContent = sentenceData.result.content || '';
+                }
+
+                renderNewspaper(lunarInfo, domesticNews, worldNews, tipsContent, sentenceContent);
+            } catch (e) {
+                console.error('加载异常:', e);
+                container.innerHTML = `<div class="info-message">加载失败，请点击刷新重试</div>`;
+            }
+        }
+
+        // 一键复制 - 修复
+        function copyToClipboard() {
+            if (!currentCopyText || currentCopyText.trim() === '') {
+                showToast('内容暂未加载完成');
+                return;
+            }
+            
+            // 优先使用Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(currentCopyText)
+                    .then(() => showToast('✅ 已复制'))
+                    .catch(() => fallbackCopy());
+            } else {
+                fallbackCopy();
+            }
+        }
+
+        function fallbackCopy() {
+            const textarea = document.createElement('textarea');
+            textarea.value = currentCopyText;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                const success = document.execCommand('copy');
+                if (success) {
+                    showToast('✅ 已复制');
+                } else {
+                    showToast('❌ 复制失败，请手动选择');
+                }
+            } catch (e) {
+                showToast('❌ 复制失败，请手动选择');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        refreshBtn.addEventListener('click', loadData);
+        copyBtn.addEventListener('click', copyToClipboard);
+        loadData();
+    })();
+    </script>
+</body>
+</html>
