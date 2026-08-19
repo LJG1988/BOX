@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>会议发起者 · 排班日历</title>
+    <title>会议发起者 · LJG</title>
     <style>
         * {
             margin: 0;
@@ -16,7 +16,7 @@
             width: 100%;
             min-height: 100vh;
             min-height: 100dvh;
-            background: #f0f5fb;
+            background: #e6edf4;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -26,7 +26,7 @@
         .app {
             width: 100%;
             max-width: 480px;
-            background: white;
+            background: #f5f9fe;
             border-radius: 0;
             box-shadow: none;
             padding: 16px 14px 20px;
@@ -35,11 +35,12 @@
         }
         @media (min-width: 481px) {
             .app {
-                border-radius: 28px;
-                box-shadow: 0 12px 28px rgba(0, 20, 40, 0.10);
+                border-radius: 32px;
+                box-shadow: 0 12px 28px rgba(18, 52, 77, 0.08), 0 2px 8px rgba(18, 52, 77, 0.04);
                 min-height: auto;
-                padding: 20px 18px 24px;
+                padding: 22px 20px 26px;
                 margin: 12px;
+                background: #f8fbfe;
             }
             html, body {
                 padding: 12px;
@@ -48,21 +49,21 @@
         h1 {
             font-size: 20px;
             font-weight: 600;
-            color: #0b2b3f;
+            color: #1a3b4f;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 4px;
-            border-bottom: 2px solid #eaf1f8;
-            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #d4e0ec;
+            margin-bottom: 12px;
             flex-wrap: wrap;
             gap: 4px;
         }
         h1 small {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            color: #2a5e7a;
-            background: #e9f0f6;
+            color: #2a5a78;
+            background: #e1ecf5;
             padding: 4px 14px;
             border-radius: 40px;
             white-space: nowrap;
@@ -72,15 +73,15 @@
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             gap: 6px;
         }
         .nav {
             display: flex;
             align-items: center;
             gap: 4px;
-            background: #f2f7fc;
-            padding: 2px 6px 2px 10px;
+            background: #e9f1f9;
+            padding: 2px 6px 2px 12px;
             border-radius: 40px;
             flex: 1;
             min-width: 0;
@@ -96,20 +97,20 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #1f4a66;
-            border: 1px solid #d6e2ed;
+            color: #1f4f6e;
+            border: 1px solid #c5d6e7;
             transition: 0.1s;
             flex-shrink: 0;
             touch-action: manipulation;
         }
         .nav button:active {
-            background: #d9e4ef;
+            background: #d0dfee;
         }
         .nav span {
             font-weight: 550;
             font-size: 15px;
             text-align: center;
-            color: #0b2b3f;
+            color: #1a3b4f;
             flex: 1;
             min-width: 0;
             overflow: hidden;
@@ -124,11 +125,11 @@
         }
         .btn {
             background: white;
-            border: 1px solid #cbdae7;
+            border: 1px solid #c5d6e7;
             padding: 4px 12px;
             border-radius: 40px;
             font-weight: 500;
-            color: #1f4a66;
+            color: #1f4f6e;
             cursor: pointer;
             font-size: 12px;
             background: #fafdff;
@@ -137,11 +138,11 @@
             touch-action: manipulation;
         }
         .btn:active {
-            background: #d9e4ef;
+            background: #d0dfee;
         }
         .btn-primary {
-            background: #1f4a66;
-            border-color: #1f4a66;
+            background: #1f4f6e;
+            border-color: #1f4f6e;
             color: white;
         }
         .btn-primary:active {
@@ -151,8 +152,8 @@
             margin-top: 4px;
             background: #fbfdff;
             border-radius: 20px;
-            padding: 4px 2px 2px 2px;
-            border: 1px solid #e4ecf5;
+            padding: 6px 4px 4px 4px;
+            border: 1px solid #dae6f2;
         }
         .weekdays {
             display: grid;
@@ -160,9 +161,9 @@
             text-align: center;
             font-weight: 500;
             font-size: 11px;
-            color: #3b5d78;
-            padding: 4px 0 6px 0;
-            border-bottom: 1px solid #e6eef7;
+            color: #3a617d;
+            padding: 4px 0 8px 0;
+            border-bottom: 1px solid #dce7f2;
         }
         .days-grid {
             display: grid;
@@ -173,7 +174,7 @@
         .day-cell {
             aspect-ratio: 1 / 1;
             background: white;
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -184,7 +185,7 @@
             padding: 1px;
             border: 1px solid transparent;
             position: relative;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             transition: 0.05s;
             touch-action: manipulation;
             user-select: none;
@@ -193,18 +194,18 @@
             min-height: 36px;
         }
         .day-cell.other-month {
-            color: #97b1c7;
-            background: #f8fbfe;
+            color: #9bb3cc;
+            background: #f4f9ff;
         }
         .day-cell.today {
             border: 2px solid #2d7fc1;
-            background: #f0f7ff;
+            background: #e5f0fc;
         }
         .day-cell .initials {
             font-size: 10px;
             font-weight: 600;
             line-height: 1.2;
-            background: #e6eff8;
+            background: #dce8f3;
             padding: 0px 5px;
             border-radius: 30px;
             margin-top: 0px;
@@ -215,8 +216,8 @@
             text-overflow: ellipsis;
         }
         .day-cell .initials.holiday-badge {
-            background: #f4e0e0;
-            color: #a54848;
+            background: #e2d6d6;
+            color: #7a3e3e;
         }
         .day-cell .day-number {
             font-weight: 500;
@@ -245,15 +246,15 @@
             color: white;
         }
         .day-cell .status-badge.cancelled {
-            background: #c0392b;
+            background: #b03a2e;
         }
         .day-cell .status-badge.modified {
-            background: #e67e22;
+            background: #bf7a2b;
         }
         .footer-note {
-            margin-top: 12px;
-            padding: 8px 12px;
-            background: #eef4fa;
+            margin-top: 14px;
+            padding: 8px 14px;
+            background: #e8f0f8;
             border-radius: 40px;
             font-size: 12px;
             color: #1a405a;
@@ -264,30 +265,35 @@
             gap: 4px;
         }
         .footer-note .status {
-            font-weight: 500;
+            font-weight: 600;
             background: white;
-            padding: 2px 12px;
+            padding: 4px 16px;
             border-radius: 40px;
-            font-size: 12px;
+            font-size: 18px;
+            color: #1a3b4f;
+            min-width: 80px;
+            text-align: center;
+            border: 1px solid #c5d6e7;
         }
         .popup-menu {
             position: fixed;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 12px 40px rgba(18, 52, 77, 0.18);
             padding: 6px 0;
             min-width: 150px;
             z-index: 999;
             display: none;
             overflow: hidden;
             animation: fadeIn 0.15s ease;
+            border: 1px solid #d4e2f0;
         }
         .popup-menu .menu-item {
             padding: 10px 16px;
             font-size: 14px;
             font-weight: 500;
             color: #1a3346;
-            border-bottom: 1px solid #f0f4f9;
+            border-bottom: 1px solid #eaf1f8;
             cursor: pointer;
             transition: 0.1s;
             display: flex;
@@ -298,10 +304,10 @@
             border-bottom: none;
         }
         .popup-menu .menu-item:active {
-            background: #eef4fa;
+            background: #e5eff8;
         }
         .popup-menu .menu-item.danger {
-            color: #c0392b;
+            color: #b03a2e;
         }
         .popup-menu .menu-item .icon {
             font-size: 16px;
@@ -314,7 +320,7 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.3);
+            background: rgba(18, 52, 77, 0.25);
             backdrop-filter: blur(3px);
             align-items: center;
             justify-content: center;
@@ -330,21 +336,22 @@
             width: 100%;
             padding: 24px 20px;
             border-radius: 32px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            box-shadow: 0 30px 60px rgba(18, 52, 77, 0.15);
             animation: fadeIn 0.2s ease;
             max-height: 90vh;
             overflow-y: auto;
+            border: 1px solid #d4e2f0;
         }
         .modal h2 {
             font-size: 20px;
             margin-bottom: 14px;
-            color: #0b2b3f;
-            border-bottom: 2px solid #eaf1f8;
+            color: #1a3b4f;
+            border-bottom: 2px solid #dce7f2;
             padding-bottom: 8px;
         }
         .modal label {
             font-weight: 500;
-            color: #1f4a66;
+            color: #1f4f6e;
             display: block;
             margin-top: 12px;
             margin-bottom: 3px;
@@ -353,7 +360,7 @@
         .modal input, .modal select {
             width: 100%;
             padding: 8px 12px;
-            border: 1px solid #d6e2ed;
+            border: 1px solid #c5d6e7;
             border-radius: 60px;
             font-size: 14px;
             background: #fafdff;
@@ -361,7 +368,7 @@
         .modal input:focus, .modal select:focus {
             outline: none;
             border-color: #2d7fc1;
-            box-shadow: 0 0 0 3px rgba(45, 127, 193, 0.15);
+            box-shadow: 0 0 0 3px rgba(45, 127, 193, 0.12);
         }
         .modal .modal-actions {
             display: flex;
@@ -375,7 +382,7 @@
         }
         .hint {
             font-size: 11px;
-            color: #5f7d96;
+            color: #5a7d99;
             margin-top: 3px;
         }
         @media (max-width: 400px) {
@@ -390,7 +397,7 @@
             .day-cell .initials { font-size: 9px; padding: 0 4px; }
             .weekdays { font-size: 10px; }
             .footer-note { font-size: 11px; padding: 6px 10px; }
-            .footer-note .status { font-size: 11px; padding: 2px 10px; }
+            .footer-note .status { font-size: 16px; padding: 3px 12px; min-width: 60px; }
             .popup-menu { min-width: 130px; }
             .popup-menu .menu-item { padding: 8px 14px; font-size: 13px; }
             .modal { padding: 20px 16px; }
@@ -409,7 +416,7 @@
             .day-cell .initials { font-size: 8px; padding: 0 3px; }
             .weekdays { font-size: 9px; padding: 3px 0; }
             .footer-note { font-size: 10px; padding: 4px 8px; flex-direction: column; align-items: center; }
-            .footer-note .status { font-size: 10px; padding: 2px 8px; }
+            .footer-note .status { font-size: 14px; padding: 2px 10px; min-width: 50px; }
             .days-grid { gap: 1px; padding: 2px 1px; }
         }
     </style>
@@ -417,7 +424,7 @@
 <body>
 <div class="app" id="app">
     <h1>
-        📅 会议发起者
+        📅 会议排班表-LJG
         <small id="todayInitiatorBadge">今天: 我</small>
     </h1>
     <div class="toolbar">
@@ -725,11 +732,11 @@
                 const initSpan = document.createElement('span');
                 initSpan.className = 'initials';
                 if (initiator === config.personA) {
-                    initSpan.style.background = '#d4e3f5';
-                    initSpan.style.color = '#0b3a5e';
+                    initSpan.style.background = '#cbddee';
+                    initSpan.style.color = '#0a3452';
                 } else {
-                    initSpan.style.background = '#d4f0e3';
-                    initSpan.style.color = '#0a5e3a';
+                    initSpan.style.background = '#c5e4d9';
+                    initSpan.style.color = '#0a523a';
                 }
                 initSpan.textContent = initiator;
                 cell.appendChild(initSpan);
@@ -908,7 +915,6 @@
         function initData() {
             const saved = loadData();
             if (saved) {
-                // 加载配置
                 const cfg = saved.config;
                 if (cfg) {
                     config.personA = cfg.personA || '我';
@@ -919,7 +925,6 @@
                     }
                     config.baseInitiator = cfg.baseInitiator || 'A';
                 }
-                // 加载覆盖数据
                 if (saved.overrideMap && Array.isArray(saved.overrideMap)) {
                     overrideMap = new Map(saved.overrideMap);
                 }
@@ -927,11 +932,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // 先加载数据
             initData();
             
-            currentYear = 2026;
-            currentMonth = 6;
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth() + 1;
 
             document.getElementById('menuCancel').addEventListener('click', handleCancel);
             document.getElementById('menuChange').addEventListener('click', handleChange);
