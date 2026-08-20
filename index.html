@@ -161,8 +161,9 @@
 
         .tool-list li:nth-child(1)::before { content: '\f06c'; }  /* 树叶 — 拾光录 */
         .tool-list li:nth-child(2)::before { content: '\f0d1'; }  /* 火箭 (代表清风/速递) — 快递 */
-        .tool-list li:nth-child(3)::before { content: '\f0f7'; }  /* 瓶 (代表露水/会议) 改用 树木: \f1bb */
         .tool-list li:nth-child(3)::before { content: '\f1bb'; }  /* 树木 — 会议 */
+        .tool-list li:nth-child(4)::before { content: '\f0f7'; }  /* 瓶/罐 — 晨报 (改用太阳) */
+        .tool-list li:nth-child(4)::before { content: '\f185'; }  /* 太阳 — 晨报 */
 
         .tool-list li:hover::before {
             color: #b8d9a8;
@@ -209,6 +210,7 @@
         .tool-list li:nth-child(1) a::after { content: '· 林间光'; }
         .tool-list li:nth-child(2) a::after { content: '· 山风'; }
         .tool-list li:nth-child(3) a::after { content: '· 树语'; }
+        .tool-list li:nth-child(4) a::after { content: '· 晨露'; }
 
         .tool-list li:hover a::after {
             opacity: 0.8;
@@ -382,6 +384,12 @@
                 <a href="会议发起人.html">
                     <i class="fas fa-tree" style="color: #8fbc7a; font-size: 1.4rem; filter: drop-shadow(0 0 8px #6a9e5a44);"></i>
                     会议发起人
+                </a>
+            </li>
+            <li>
+                <a href="每日晨报.html">
+                    <i class="fas fa-sun" style="color: #8fbc7a; font-size: 1.4rem; filter: drop-shadow(0 0 8px #6a9e5a44);"></i>
+                    每日晨报
                 </a>
             </li>
         </ul>
